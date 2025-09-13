@@ -1,68 +1,80 @@
-import { supabase } from '../config/supabaseClient.js';
-import bcrypt from 'bcrypt';
-import jwt from 'jsonwebtoken';
+import {
+  signupUserService,
+  loginUserService,
+  signupAdminService,
+  loginAdminService,
+  loginCreatorService,
+} from '../services/authService.js';
+import { sendOtp, verifyOtpAndResetPassword } from '../services/authService.js';
 
-const JWT_SECRET = process.env.JWT_SECRET || 'your_jwt_secret';
-
-function generateToken(user) {
-  return jwt.sign({ id: user.id, role: user.role }, JWT_SECRET, { expiresIn: '7d' });
-}
-
-export const signup = async (req, res) => {
-  const { full_name, email, password, role } = req.body;
-  if (!full_name || !email || !password || !role) {
-    return res.status(400).json({ error: 'All fields are required' });
-  }
-  if (!['user', 'creator', 'admin'].includes(role)) {
-    return res.status(400).json({ error: 'Invalid role' });
-  }
-
+export const signupUser = async (req, res) => {
   try {
-    const { data: existingUser } = await supabase
-      .from('users')
-      .select('id')
-      .eq('email', email)
-      .single();
-
-    if (existingUser) return res.status(400).json({ error: 'Email already registered' });
-
-    const password_hash = await bcrypt.hash(password, 10);
-    const { data, error } = await supabase
-      .from('users')
-      .insert([{ full_name, email, password_hash, role }])
-      .select('id, full_name, email, role')
-      .single();
-
-    if (error) throw error;
-
-    const token = generateToken(data);
-    res.status(201).json({ user: data, token });
+    const { full_name, email, password } = req.body;
+    const result = await signupUserService({ full_name, email, password });
+    res.status(201).json(result);
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Server error' });
+    res.status(400).json({ error: error.message });
   }
 };
 
-export const login = async (req, res) => {
-  const { email, password } = req.body;
-  if (!email || !password) return res.status(400).json({ error: 'Email and password required' });
-
+export const loginUser = async (req, res) => {
   try {
-    const { data: user, error } = await supabase
-      .from('users')
-      .select('*')
-      .eq('email', email)
-      .single();
-
-    if (!user || error) return res.status(400).json({ error: 'Invalid email or password' });
-
-    const passwordMatch = await bcrypt.compare(password, user.password_hash);
-    if (!passwordMatch) return res.status(400).json({ error: 'Invalid email or password' });
-
-    const token = generateToken(user);
-    res.json({ user: { id: user.id, full_name: user.full_name, email: user.email, role: user.role }, token });
+    const { email, password } = req.body;
+    const result = await loginUserService({ email, password });
+    res.json(result);
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Server error' });
+    res.status(400).json({ error: error.message });
+  }
+};
+
+export const signupAdmin = async (req, res) => {
+  try {
+    const { full_name, email, password } = req.body;
+    const result = await signupAdminService({ full_name, email, password });
+    res.status(201).json(result);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+};
+
+export const loginAdmin = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    const result = await loginAdminService({ email, password });
+    res.json(result);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+};
+
+
+export const loginCreator = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    const result = await loginCreatorService({ email, password });
+    res.json(result);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+};
+
+
+export const forgotPassword = async (req, res) => {
+  try {
+    const { email } = req.body;
+    await sendOtp(email);
+    res.json({ message: 'OTP sent to email' });
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+};
+
+export const resetPassword = async (req, res) => {
+  try {
+    const { email, otp_code, new_password } = req.body;
+    await verifyOtpAndResetPassword(email, otp_code, new_password);
+    res.json({ message: 'Password reset successful' });
+  } catch (error) {
+    res.status(400).json({ error: error.message });
   }
 };

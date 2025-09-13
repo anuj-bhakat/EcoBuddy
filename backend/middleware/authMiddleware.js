@@ -1,4 +1,6 @@
 import jwt from 'jsonwebtoken';
+import { supabase } from '../config/supabaseClient.js';
+
 const JWT_SECRET = process.env.JWT_SECRET || 'your_jwt_secret';
 
 export function authenticateRole(roles) {
@@ -17,4 +19,24 @@ export function authenticateRole(roles) {
       res.status(401).json({ error: 'Invalid or expired token' });
     }
   };
+}
+
+// Middleware to check if logged-in user is creator
+export async function authenticateCreator(req, res, next) {
+  try {
+    if (!req.user) return res.status(401).json({ error: 'Not authenticated' });
+
+    const userId = req.user.id;
+    const { data: creator } = await supabase
+      .from('creators')
+      .select('user_id')
+      .eq('user_id', userId)
+      .single();
+
+    if (!creator) return res.status(403).json({ error: 'Only creators allowed' });
+
+    next();
+  } catch {
+    res.status(500).json({ error: 'Server error' });
+  }
 }

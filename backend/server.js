@@ -1,19 +1,19 @@
 import express from 'express';
+import cors from 'cors';
 import dotenv from 'dotenv';
 import authRoutes from './routes/authRoutes.js';
+import creatorRoutes from './routes/creatorRoutes.js';
 
 dotenv.config();
 
 const app = express();
 
 app.use(express.json());
+app.use(cors());
 app.use('/api/auth', authRoutes);
+app.use('/api/creator', creatorRoutes);
 
-app.get('/', (req, res) => {
-  res.send('EcoBuddy backend API up and running');
-});
+app.get('/', (req, res) => res.send('EcoBuddy backend API'));
 
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  console.log(`Server listening on port ${PORT}`);
-});
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
