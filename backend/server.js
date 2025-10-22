@@ -3,6 +3,8 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import authRoutes from './routes/authRoutes.js';
 import creatorRoutes from './routes/creatorRoutes.js';
+import greenPointsRoutes from './routes/greenPointsRoutes.js';
+import challengeRoutes from './routes/challengeRoutes.js';
 
 dotenv.config();
 
@@ -12,6 +14,8 @@ app.use(express.json());
 app.use(cors());
 app.use('/api/auth', authRoutes);
 app.use('/api/creator', creatorRoutes);
+app.use('/api/greenpoints', greenPointsRoutes);
+app.use('/api/challenges', challengeRoutes);
 
 app.get('/', (req, res) => res.send('EcoBuddy backend API'));
 

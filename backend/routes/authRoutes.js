@@ -1,5 +1,5 @@
 import express from 'express';
-import { signupUser, loginUser, signupAdmin, loginAdmin, loginCreator, forgotPassword, resetPassword } from '../controllers/authController.js';
+import { signupUser, loginUser, signupAdmin, loginAdmin, loginCreator, forgotPassword, resetPassword, changePassword } from '../controllers/authController.js';
 
 const router = express.Router();
 
@@ -8,6 +8,7 @@ router.post('/signup/user', signupUser);
 router.post('/login/user', loginUser);
 router.post('/forgot-password', forgotPassword);
 router.post('/reset-password', resetPassword);
+router.post('/change-password', changePassword);
 
 // Creator login route
 router.post('/login/creator', loginCreator);

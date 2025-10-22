@@ -3,6 +3,7 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import crypto from 'crypto';
 import nodemailer from 'nodemailer';
+import { insertUserGreenPoints } from './greenPointsService.js';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'your_jwt_secret';
 
@@ -15,15 +16,17 @@ export const signupUserService = async ({ full_name, email, password }) => {
   if (existingUser) throw new Error('Email already registered');
 
   const password_hash = await bcrypt.hash(password, 10);
-  const { data, error } = await supabase
+  const { data: user, error } = await supabase
     .from('users')
     .insert([{ full_name, email, password_hash }])
     .select('id, full_name, email')
     .single();
   if (error) throw error;
 
-  const token = generateToken(data);
-  return { user: data, token };
+  await insertUserGreenPoints(user.id, 100);
+
+  const token = generateToken(user);
+  return { user, token };
 };
 
 export const loginUserService = async ({ email, password }) => {
@@ -133,13 +136,6 @@ export const sendOtp = async (email) => {
     if (error) throw error;
   }
 
-  // Send OTP via email (same for new or existing)
-//   await transporter.sendMail({
-//     from: `"EcoBuddy Support" <${process.env.SMTP_USER}>`,
-//     to: user.email,
-//     subject: 'Your EcoBuddy Password Reset OTP',
-//     text: `Your OTP code is ${otp_code}. It expires in 10 minutes.`,
-//   });
     await transporter.sendMail({
     from: `"EcoBuddy Support" <${process.env.SMTP_USER}>`,
     to: user.email,
@@ -208,6 +204,33 @@ export const verifyOtpAndResetPassword = async (email, otp_code, new_password) =
     .eq('id', otpRecord.id);
 
   if (usedError) throw usedError;
+
+  return true;
+};
+
+
+export const changeUserPassword = async (user_id, current_password, new_password) => {
+  // Fetch user's current password hash
+  const { data: user, error } = await supabase
+    .from('users')
+    .select('password_hash')
+    .eq('id', user_id)
+    .single();
+  if (error || !user) throw new Error('User not found');
+
+  // Verify current password
+  const isValid = await bcrypt.compare(current_password, user.password_hash);
+  if (!isValid) throw new Error('Current password is incorrect');
+
+  // Hash new password
+  const newHashedPassword = await bcrypt.hash(new_password, 10);
+
+  // Update password in DB
+  const { error: updateError } = await supabase
+    .from('users')
+    .update({ password_hash: newHashedPassword })
+    .eq('id', user_id);
+  if (updateError) throw updateError;
 
   return true;
 };

@@ -4,6 +4,7 @@ import {
   signupAdminService,
   loginAdminService,
   loginCreatorService,
+  changeUserPassword,
 } from '../services/authService.js';
 import { sendOtp, verifyOtpAndResetPassword } from '../services/authService.js';
 
@@ -74,6 +75,20 @@ export const resetPassword = async (req, res) => {
     const { email, otp_code, new_password } = req.body;
     await verifyOtpAndResetPassword(email, otp_code, new_password);
     res.json({ message: 'Password reset successful' });
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+};
+
+
+export const changePassword = async (req, res) => {
+  try {
+    const { user_id, current_password, new_password } = req.body;
+    if (!user_id || !current_password || !new_password) {
+      return res.status(400).json({ error: 'All fields are required' });
+    }
+    await changeUserPassword(user_id, current_password, new_password);
+    res.json({ message: 'Password changed successfully' });
   } catch (error) {
     res.status(400).json({ error: error.message });
   }

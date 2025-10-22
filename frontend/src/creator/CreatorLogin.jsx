@@ -22,12 +22,14 @@ export function CreatorLogin() {
       });
 
       const { token } = response.data;
+      const creatorId =response.data.user.id;
       localStorage.setItem("creator", token);
+      localStorage.setItem("creatorId", creatorId);
 
       setMessage({ type: "success", text: "Login successful! Redirecting..." });
 
       setTimeout(() => {
-        navigate("/home");
+        navigate("/creator-home");
       }, 1000);
     } catch (error) {
       setMessage({
