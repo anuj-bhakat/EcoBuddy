@@ -11,7 +11,7 @@ import EcoProducts from './user/EcoProducts';
 import LandingPage from './LandingPage';
 import Challenges from './user/Challenges';
 import Dashboard from './user/Dashboard';
-import TestGreenPoints from './test/TestGreenPoints';
+// import TestGreenPoints from './test/TestGreenPoints';
 import Community from './user/Community';
 import MyActivity from './user/MyActivity';
 import AdminSignup from './test/AdminSignup';
@@ -53,7 +53,7 @@ function App() {
           <Route path="/admin-login" element={<AdminLogin />} />
 
           <Route path="/admin-signup" element={<AdminSignup />} />
-          <Route path="/test-green" element={<TestGreenPoints />} />
+          {/* <Route path="/test-green" element={<TestGreenPoints />} /> */}
           <Route path="/admin-home" element={<ManageCreator />} />
 
           <Route path="/*" element={<NotFound />} />
