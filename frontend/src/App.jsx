@@ -14,8 +14,8 @@ import Dashboard from './user/Dashboard';
 // import TestGreenPoints from './test/TestGreenPoints';
 import Community from './user/Community';
 import MyActivity from './user/MyActivity';
-import AdminSignup from './test/AdminSignup';
-import ManageCreator from './test/ManageCreator';
+// import AdminSignup from './test/AdminSignup';
+// import ManageCreator from './test/ManageCreator';
 import CreateChallenge from './creator/CreateChallenge';
 import ViewChallenges from './creator/ViewChallenges';
 import ModifyChallenge from './creator/ModifyChallenge';
@@ -52,9 +52,9 @@ function App() {
           
           <Route path="/admin-login" element={<AdminLogin />} />
 
-          <Route path="/admin-signup" element={<AdminSignup />} />
+          {/* <Route path="/admin-signup" element={<AdminSignup />} /> */}
           {/* <Route path="/test-green" element={<TestGreenPoints />} /> */}
-          <Route path="/admin-home" element={<ManageCreator />} />
+          {/* <Route path="/admin-home" element={<ManageCreator />} /> */}
 
           <Route path="/*" element={<NotFound />} />
         </Routes>
