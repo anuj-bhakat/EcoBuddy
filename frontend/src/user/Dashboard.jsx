@@ -33,7 +33,7 @@ const tabs = [
     key: "history",
     name: "Green Points History",
     icon: (
-      <svg className="w-5 h-5 mr-2 inline" fill="none" stroke="#64748B" strokeWidth={2.2} viewBox="0 0 24 24"><path d="M3 3v6h6"/><path d="M21 21v-6h-6"/><path d="M17.657 6.343a8 8 0 010 11.314M6.343 17.657a8 8 0 010-11.314"/></svg>
+      <svg className="w-5 h-5 mr-2 inline" fill="none" stroke="#64748B" strokeWidth={2.2} viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
     ),
   },
 ];
@@ -62,7 +62,7 @@ function CustomDropdown({ tabs, activeTab, onChange }) {
   }, [open]);
 
   return (
-    <div ref={dropdownRef} className="relative md:hidden px-4 pt-6 mb-6 z-50">
+    <div ref={dropdownRef} className="relative md:hidden px-4 pt-6 mb-6 z-30">
       <button
         onClick={() => setOpen(!open)}
         className="w-full flex justify-between items-center px-4 py-3 rounded-lg border border-green-300 bg-green-50 text-green-800 font-semibold text-base focus:outline-none"
@@ -82,7 +82,7 @@ function CustomDropdown({ tabs, activeTab, onChange }) {
       </button>
 
       {open && (
-        <div className="absolute left-4 right-4 mt-2 rounded-xl border border-green-200 bg-white shadow-lg">
+        <div className="absolute left-4 right-4 mt-2 rounded-xl border border-green-200 bg-white shadow-lg z-40">
           {tabs.map((tab) => (
             <button
               key={tab.key}

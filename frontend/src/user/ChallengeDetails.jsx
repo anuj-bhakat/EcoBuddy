@@ -356,7 +356,7 @@ export default function ChallengeDetails({ challengeId, onClose }) {
 
   return (
     <div
-      className="min-h-screen bg-gradient-to-b from-green-100 via-green-50 to-green-200 py-3 max-w-full mx-auto flex flex-col relative rounded-lg px-8 sm:px-16 md:px-20 lg:px-28 xl:px-40 font-sans text-green-900 shadow-inner overflow-hidden"
+      className="min-h-screen bg-gradient-to-b from-green-100 via-green-50 to-green-200 py-2 sm:py-3 max-w-full mx-auto flex flex-col relative rounded-lg px-4 sm:px-8 md:px-16 lg:px-20 xl:px-28 font-sans text-green-900 shadow-inner overflow-hidden"
       ref={containerRef}
       style={{ fontFamily: "'Inter', 'Segoe UI', 'Roboto', Arial, sans-serif", position: 'relative' }}
     >
@@ -386,7 +386,7 @@ export default function ChallengeDetails({ challengeId, onClose }) {
 
       {/* Title and Status */}
       <div className="flex flex-col items-start gap-2 mb-4 z-10">
-        <h1 className="text-2xl sm:text-4xl font-extrabold tracking-tight leading-tight drop-shadow-md"
+        <h1 className="text-xl sm:text-2xl md:text-4xl font-extrabold tracking-tight leading-tight drop-shadow-md"
             style={{ fontFamily: "'Inter', 'Segoe UI', 'Roboto', Arial, sans-serif" }}>
           {challenge.title}
         </h1>
@@ -397,61 +397,50 @@ export default function ChallengeDetails({ challengeId, onClose }) {
       </div>
 
       {/* Category, Difficulty, Participants */}
-      <div className="flex items-center justify-between mb-2 flex-wrap gap-y-3 gap-x-6 z-10">
-        <div className="flex flex-wrap gap-4 items-center">
-          <InfoTag label="Category" value={challenge.category} icon={<MdCategory className="mr-2 w-6 h-6" />} color="green" compact large />
-          <InfoTag label="Difficulty" value={challenge.difficulty} icon={<MdStarRate className="mr-2 w-6 h-6" />} color="yellow" compact large />
-          <ParticipantsTag value={`${challenge.totalParticipants}/${challenge.participantCap}`} compact large />
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-2 gap-2 sm:gap-6 z-10">
+        <div className="flex flex-wrap gap-2 sm:gap-4 items-center">
+          <InfoTag label="Category" value={challenge.category} icon={<MdCategory className="mr-1 w-4 h-4 sm:mr-2 sm:w-6 sm:h-6" />} color="green" compact />
+          <InfoTag label="Difficulty" value={challenge.difficulty} icon={<MdStarRate className="mr-1 w-4 h-4 sm:mr-2 sm:w-6 sm:h-6" />} color="yellow" compact />
+          <ParticipantsTag value={`${challenge.totalParticipants}/${challenge.participantCap}`} compact />
         </div>
         <div
-          className="inline-flex items-center gap-2 px-4 py-2 rounded-full font-extrabold text-lg bg-green-300 text-green-900 select-none shadow min-w-[140px]"
+          className="inline-flex items-center gap-1 sm:gap-2 px-3 py-1 sm:px-4 sm:py-2 rounded-full font-extrabold text-sm sm:text-lg bg-green-300 text-green-900 select-none shadow min-w-[120px] sm:min-w-[140px]"
           title={`Green Points: +${challenge.greenPoints}`}
         >
-          <FaLeaf className="w-6 h-6" />
-          <span>Green Points:</span>
+          <FaLeaf className="w-4 h-4 sm:w-6 sm:h-6" />
+          <span className="hidden sm:inline">Green Points:</span>
+          <span className="sm:hidden">Points:</span>
           <span>{challenge.greenPoints}</span>
         </div>
       </div>
 
-      {/* Dates & Created by & Time (responsive, better icon for time) */}
+      {/* Dates & Created by & Time (compact for mobile) */}
       <div className="
-        flex flex-col sm:flex-row flex-wrap gap-2 sm:gap-x-6 mb-2 z-10
-        items-start sm:items-center text-green-800 font-medium text-base
+        flex flex-col gap-2 mb-3 z-10
+        text-green-800 font-medium text-sm sm:text-base
       ">
-        <div className="flex flex-wrap gap-3 items-center">
-          <span className="flex items-center gap-1 rounded-md px-2 py-1 bg-green-50">
-            <MdEvent className="w-5 h-5 text-green-700" />
-            <b className="min-w-[48px]">Start:</b>
-            <span className="whitespace-nowrap">
-              {formatIST(challenge.startDate).split(",")[0]}
-              <span className="inline-flex items-center ml-2">
-                <MdAccessTime className="w-5 h-5 text-green-700 mr-1 -mt-0.5" />
-                {formatIST(challenge.startDate).split(",").slice(1).join(",").trim()}
-              </span>
+        <div className="flex flex-col sm:flex-row gap-2 sm:gap-4 items-start sm:items-center">
+          <div className="flex flex-col sm:flex-row gap-2 items-start sm:items-center">
+            <span className="flex items-center gap-1 rounded px-1.5 py-0.5 bg-green-50 text-xs sm:text-sm">
+              <MdEvent className="w-4 h-4 text-green-700" />
+              <b>Start:</b> {formatIST(challenge.startDate)}
             </span>
-          </span>
-          <span className="flex items-center gap-1 rounded-md px-2 py-1 bg-green-50">
-            <MdEvent className="w-5 h-5 text-green-700" />
-            <b className="min-w-[40px]">End:</b>
-            <span className="whitespace-nowrap">
-              {formatIST(challenge.endDate).split(",")[0]}
-              <span className="inline-flex items-center ml-2">
-                <MdAccessTime className="w-5 h-5 text-green-700 mr-1 -mt-0.5" />
-                {formatIST(challenge.endDate).split(",").slice(1).join(",").trim()}
-              </span>
+            <span className="flex items-center gap-1 rounded px-1.5 py-0.5 bg-green-50 text-xs sm:text-sm">
+              <MdEvent className="w-4 h-4 text-green-700" />
+              <b>End:</b> {formatIST(challenge.endDate)}
             </span>
+          </div>
+          <span className="text-xs sm:text-sm whitespace-nowrap">
+            <span className="font-semibold">Created by:</span> {challenge.creatorName}
           </span>
         </div>
-        <span className="whitespace-nowrap ml-0 sm:ml-3 mt-1 sm:mt-0">
-          <span className="font-semibold">Created by:</span> {challenge.creatorName}
-        </span>
-      </div>
-      <div className="flex flex-wrap items-center gap-2 text-green-900 text-base mb-2 z-10">
-        <span className="font-semibold">Current Time (IST):</span>
-        <span className="inline-flex items-center font-mono bg-green-50 rounded px-2 py-1">
-          <MdAccessTime className="w-5 h-5 text-green-700 mr-1 -mt-0.5" />
-          {nowIST}
-        </span>
+        <div className="flex items-center gap-2 text-green-900 text-xs sm:text-sm">
+          <span className="font-semibold">Current Time (IST):</span>
+          <span className="inline-flex items-center font-mono bg-green-50 rounded px-1.5 py-0.5">
+            <MdAccessTime className="w-4 h-4 text-green-700 mr-1" />
+            {nowIST}
+          </span>
+        </div>
       </div>
 
       {/* Main Content */}

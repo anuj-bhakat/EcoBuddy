@@ -32,8 +32,8 @@ export default function GreenPointsHistoryTab() {
   return (
     <div className="w-full">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 gap-3">
-        <h3 className="text-xl sm:text-2xl font-bold text-green-800 flex items-center gap-2">
-          📊 Green Points History
+        <h3 className="text-xl sm:text-2xl font-bold text-green-800">
+          Green Points History
         </h3>
         {currentPoints !== null && (
           <div className="bg-green-100 px-3 py-2 rounded-lg text-green-800 font-semibold text-sm flex items-center border border-green-200">
