@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import {
   MdEvent, MdGroup, MdChevronLeft, MdChevronRight,
@@ -50,6 +51,7 @@ export default function ChallengeDetails({ challengeId, onClose }) {
   const containerRef = useRef(null);
   const previewsRef = useRef(null);
   const scrollTimeout = useRef(null);
+  const navigate = useNavigate();
 
   // For re-use (fetch on mount and after reg actions)
   const fetchChallengeDetails = async () => {
@@ -197,6 +199,11 @@ export default function ChallengeDetails({ challengeId, onClose }) {
     }
   };
 
+  const handleParticipate = () => {
+    // Replace alert with your real participate logic/API call
+    navigate("/challenge-participation", { state: { challengeId } });
+  };
+
   const showNextImage = () => {
     if (!challenge || challenge.images.length === 0) return;
     setImageLoading(true);
@@ -278,17 +285,19 @@ export default function ChallengeDetails({ challengeId, onClose }) {
   if (!challenge) return null;
 
   const isFull = challenge.totalParticipants >= challenge.participantCap;
-  const canRegister = !isFull && (challenge.status === "open" || challenge.status === "ongoing");
+  const isOngoing = challenge.status === "ongoing";
+  const canRegister = !isFull && (challenge.status === "open" || isOngoing);
   const sideBySideLayout = containerWidth >= 1024 && challenge.images.length > 0;
 
   const statusIcon = (() => {
     if (challenge.status === "open")
       return <MdCheckCircle className="text-blue-600 mr-2" size={24} />;
-    if (challenge.status === "ongoing")
+    if (isOngoing)
       return <MdHourglassEmpty className="text-green-600 mr-2" size={24} />;
     return <MdLock className="text-yellow-600 mr-2" size={24} />;
   })();
 
+  // Improved registration block
   const renderRegisterBlock = (
     <div className={`max-w-xs w-full mx-auto mb-10 ${sideBySideLayout ? "mt-8" : ""}`}>
       {registerMessage && (
@@ -304,6 +313,22 @@ export default function ChallengeDetails({ challengeId, onClose }) {
           <p className="text-base font-bold mb-1">Registration Closed</p>
           Participant limit reached.
         </div>
+      ) : (isOngoing && isRegistered) ? (
+        <>
+          <button
+            className="w-full px-5 py-3 bg-gray-400 text-white text-lg font-bold rounded-full shadow-lg cursor-not-allowed mb-2"
+            disabled
+          >
+            Unregister
+          </button>
+          <div className="text-sm text-center mb-2 text-gray-700">Cannot unregister during ongoing challenge.</div>
+          <button
+            className="w-full px-5 py-3 bg-blue-700 hover:bg-blue-800 text-white text-lg font-bold rounded-full shadow-lg transition-shadow focus:outline-none focus:ring-2 focus:ring-blue-600 cursor-pointer"
+            onClick={handleParticipate}
+          >
+            Participate
+          </button>
+        </>
       ) : canRegister || isRegistered ? (
         <button
           onClick={handleRegisterOrUnregister}

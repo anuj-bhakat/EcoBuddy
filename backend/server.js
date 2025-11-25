@@ -5,6 +5,7 @@ import authRoutes from './routes/authRoutes.js';
 import creatorRoutes from './routes/creatorRoutes.js';
 import greenPointsRoutes from './routes/greenPointsRoutes.js';
 import challengeRoutes from './routes/challengeRoutes.js';
+import challengeSubmissionRoutes from './routes/challengeSubmissionRoutes.js';
 
 dotenv.config();
 
@@ -16,6 +17,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/creator', creatorRoutes);
 app.use('/api/greenpoints', greenPointsRoutes);
 app.use('/api/challenges', challengeRoutes);
+app.use('/api/challenge-submissions', challengeSubmissionRoutes);
 
 app.get('/', (req, res) => res.send('EcoBuddy backend API'));
 

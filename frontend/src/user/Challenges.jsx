@@ -37,7 +37,7 @@ export default function Challenges() {
           category: ch.category,
           difficulty: ch.difficulty,
           status: ch.status,
-          totalParticipants: ch.total_participated || ch.total_registered || 0,
+          totalParticipants: ch.total_registered || 0,
           participantCap: ch.max_participants,
           greenPoints: ch.green_points,
         }));

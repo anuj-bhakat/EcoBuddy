@@ -22,7 +22,7 @@ export default function CreatorNavbar() {
           { label: "Dashboard", path: "/creator/dashboard" },
           { label: "Create Challenge", path: "/creator/create-challenge" },
           { label: "Modify Challenges", path: "/creator/view-challenge" },
-          { label: "View Submissions", path: "/creator/view-submissions" },
+          { label: "View Submissions", path: "/creator/get-submissions" },
           { label: "Analytics", path: "/creator/analytics" },
         ]
       : []),

@@ -143,8 +143,6 @@ export const updateChallenge = async (id, updateData, imageFiles, existingImageU
   return updatedChallenge;
 };
 
-
-
 export const deleteChallenge = async (id) => {
   const { error } = await supabase
     .from('challenges')
@@ -344,3 +342,65 @@ export const fetchChallengesByCreator = async (creator_id) => {
   if (error) throw error;
   return data;
 };
+
+
+
+
+
+// --------------- Auto Update Function --------------- 
+
+export const autoUpdateChallengeStatus = async () => {
+  const now = new Date();
+
+  // 1. Update "open" to "ongoing"
+  const { data: openChallenges, error: openError } = await supabase
+    .from('challenges')
+    .select('id, start_date, end_date')
+    .eq('status', 'open');
+
+  if (openError) {
+    console.error("Auto update status (open->ongoing) error:", openError);
+    return;
+  }
+
+  const toOngoing = (openChallenges || [])
+    .filter(c => {
+      const start = new Date(c.start_date);
+      const end = new Date(c.end_date);
+      return start <= now && now < end;
+    })
+    .map(c => c.id);
+
+  if (toOngoing.length > 0) {
+    await supabase
+      .from('challenges')
+      .update({ status: 'ongoing' })
+      .in('id', toOngoing);
+  }
+
+  // 2. Update "ongoing" to "closed"
+  const { data: ongoingChallenges, error: ongoingError } = await supabase
+    .from('challenges')
+    .select('id, end_date')
+    .eq('status', 'ongoing');
+
+  if (ongoingError) {
+    console.error("Auto update status (ongoing->closed) error:", ongoingError);
+    return;
+  }
+
+  const toClosed = (ongoingChallenges || [])
+    .filter(c => {
+      const end = new Date(c.end_date);
+      return now >= end;
+    })
+    .map(c => c.id);
+
+  if (toClosed.length > 0) {
+    await supabase
+      .from('challenges')
+      .update({ status: 'closed' })
+      .in('id', toClosed);
+  }
+};
+

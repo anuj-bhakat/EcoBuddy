@@ -1,11 +1,13 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 import Navbar from "./Navbar";
 
 export function UserLogin() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState(null);
   const navigate = useNavigate();
@@ -78,6 +80,10 @@ export function UserLogin() {
       50% { transform: translateY(-15px) scale(1.1); opacity: 1; }
       100% { transform: translateY(0) scale(1); opacity: 0.7; }
     }
+    @keyframes fadeInUp {
+      0% { opacity: 0; transform: translateY(20px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
   `;
 
   return (
@@ -113,11 +119,14 @@ export function UserLogin() {
 
       {/* Login Card */}
       <div className="flex-grow flex items-center justify-center px-4 py-10 relative z-10">
-        <div className="w-full max-w-md bg-white rounded-2xl shadow-xl border border-gray-100 px-8 py-10 md:py-12 lg:px-10 transition-all duration-300">
-          <h2 className="text-2xl md:text-3xl font-bold text-center text-green-800 mb-4">
+        <div
+          className="w-full max-w-md bg-white rounded-2xl shadow-xl border border-gray-100 px-6 sm:px-8 py-8 md:py-10 lg:px-10 transition-all duration-300"
+          style={{ animation: "fadeInUp 0.6s ease-out" }}
+        >
+          <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-center text-green-800 mb-4">
             Welcome Back 🌱
           </h2>
-          <p className="text-center text-gray-600 text-sm mb-8">
+          <p className="text-center text-gray-600 text-sm mb-6 sm:mb-8">
             Log in to continue your climate journey.
           </p>
 
@@ -135,7 +144,10 @@ export function UserLogin() {
           )}
 
           <form onSubmit={handleSubmit} noValidate>
-            <div className="mb-5">
+            <div className="mb-4 sm:mb-5">
+              <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+                Email Address
+              </label>
               <input
                 type="email"
                 id="email"
@@ -144,28 +156,43 @@ export function UserLogin() {
                 autoComplete="email"
                 placeholder="Email address"
                 required
-                className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-green-600 focus:ring-2 focus:ring-green-100 focus:outline-none bg-gray-50 placeholder-gray-400 text-sm"
+                className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-green-600 focus:ring-2 focus:ring-green-100 focus:outline-none bg-gray-50 placeholder-gray-400 text-sm transition-colors"
+                aria-describedby="email-error"
               />
             </div>
 
             <div className="mb-4">
-              <input
-                type="password"
-                id="password"
-                value={password}
-                onChange={handlePasswordChange}
-                autoComplete="current-password"
-                placeholder="Password"
-                required
-                className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-green-600 focus:ring-2 focus:ring-green-100 focus:outline-none bg-gray-50 placeholder-gray-400 text-sm"
-              />
+              <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
+                Password
+              </label>
+              <div className="relative">
+                <input
+                  type={showPassword ? "text" : "password"}
+                  id="password"
+                  value={password}
+                  onChange={handlePasswordChange}
+                  autoComplete="current-password"
+                  placeholder="Password"
+                  required
+                  className="w-full px-4 py-3 pr-12 rounded-lg border border-gray-300 focus:border-green-600 focus:ring-2 focus:ring-green-100 focus:outline-none bg-gray-50 placeholder-gray-400 text-sm transition-colors"
+                  aria-describedby="password-error"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700 focus:outline-none focus:text-gray-700"
+                  aria-label={showPassword ? "Hide password" : "Show password"}
+                >
+                  {showPassword ? <FaEyeSlash size={18} /> : <FaEye size={18} />}
+                </button>
+              </div>
             </div>
 
-            <div className="text-right mb-6">
+            <div className="text-right mb-4 sm:mb-6">
               <button
                 type="button"
                 onClick={handleForgotPasswordNavigation}
-                className="text-sm text-green-700 hover:underline font-medium"
+                className="text-sm text-green-700 hover:underline font-medium focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 rounded"
               >
                 Forgot password?
               </button>
@@ -174,20 +201,20 @@ export function UserLogin() {
             <button
               type="submit"
               disabled={loading}
-              className={`w-full bg-green-600 text-white font-semibold py-3 rounded-lg shadow hover:bg-green-700 transition transform duration-200 ${
-                loading ? "opacity-80 cursor-not-allowed" : "hover:scale-105"
+              className={`w-full bg-green-600 text-white font-semibold py-3 rounded-lg shadow hover:bg-green-700 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 ${
+                loading ? "opacity-80 cursor-not-allowed" : "hover:scale-105 active:scale-95"
               }`}
             >
               {loading ? "Logging in..." : "Login"}
             </button>
           </form>
 
-          <p className="mt-6 text-center text-sm text-gray-600">
+          <p className="mt-4 sm:mt-6 text-center text-sm text-gray-600">
             Don't have an account?{" "}
             <button
               type="button"
               onClick={handleSignupNavigation}
-              className="text-green-700 hover:underline font-medium"
+              className="text-green-700 hover:underline font-medium focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 rounded"
             >
               Sign up
             </button>

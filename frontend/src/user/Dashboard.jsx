@@ -112,7 +112,7 @@ export default function Dashboard() {
     async function fetchUserData() {
       const userId = localStorage.getItem('user_id');
       try {
-        const response = await axios.get(`http://localhost:3000/api/greenpoints/user-profile/${userId}`);
+        const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/greenpoints/user-profile/${userId}`);
         setUser(response.data);
       } catch (error) {
         console.error('Error fetching user data:', error);

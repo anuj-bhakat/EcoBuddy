@@ -1,5 +1,5 @@
 import express from 'express';
-import { authenticateRole, authenticateCreator } from '../middleware/authMiddleware.js';
+import { authenticateRole, authenticateCreator } from '../middlewares/authMiddleware.js';
 import { promoteToCreator, demoteCreator } from '../controllers/creatorController.js';
 
 const router = express.Router();

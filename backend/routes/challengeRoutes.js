@@ -1,11 +1,14 @@
 import express from 'express';
 import * as challengeController from '../controllers/challengeController.js';
 import multer from 'multer';
+import { challengeStatusMiddleware } from '../middlewares/autoChallengeStatus.js';
 
 const storage = multer.memoryStorage();
 const upload = multer({ storage });
 
 const router = express.Router();
+
+router.use(challengeStatusMiddleware);
 
 router.post('/', upload.array('images', 10), challengeController.createChallenge);
 router.put('/:id', upload.fields([{ name: 'images', maxCount: 10 }]), challengeController.updateChallenge);

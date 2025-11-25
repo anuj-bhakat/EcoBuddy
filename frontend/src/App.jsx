@@ -19,6 +19,9 @@ import ManageCreator from './test/ManageCreator';
 import CreateChallenge from './creator/CreateChallenge';
 import ViewChallenges from './creator/ViewChallenges';
 import ModifyChallenge from './creator/ModifyChallenge';
+import ChallengeParticipation from './user/ChallengeParticipation';
+import GetSubmissions from './creator/GetSubmissions';
+import ViewSubmissions from './creator/ViewSubmissions';
 
 function App() {
   return (
@@ -34,6 +37,7 @@ function App() {
           <Route path="/home" element={<Home />} />
           <Route path="/eco-products" element={<EcoProducts />} />
           <Route path="/challenges" element={<Challenges />} />
+          <Route path="/challenge-participation" element={<ChallengeParticipation />} />
           <Route path="/community" element={<Community />} />
           <Route path="/my-activities" element={<MyActivity />} />
 
@@ -42,6 +46,8 @@ function App() {
           <Route path="/creator-home" element={<CreateChallenge />} />
           <Route path="/creator/create-challenge" element={<CreateChallenge />} />
           <Route path="/creator/view-challenge" element={<ViewChallenges />} />
+          <Route path="/creator/get-submissions" element={<GetSubmissions />} />
+          <Route path="/creator/view-submissions" element={<ViewSubmissions />} />
           <Route path="/creator/modify-challenge" element={<ModifyChallenge />} />
           
           <Route path="/admin-login" element={<AdminLogin />} />
