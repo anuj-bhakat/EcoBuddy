@@ -121,6 +121,7 @@ export default function ViewSubmissions() {
   const [viewing, setViewing] = useState(null);
   const [greenPoints, setGreenPoints] = useState("");
   const [decisionLoading, setDecisionLoading] = useState(false);
+  const [decisionError, setDecisionError] = useState(null);
   const [sortOrder, setSortOrder] = useState("newest");
   const [searchUser, setSearchUser] = useState("");
   const [modalImg, setModalImg] = useState(null);
@@ -232,13 +233,44 @@ export default function ViewSubmissions() {
     setViewing(null);
     setGreenPoints("");
   };
-  const handleDecision = async decision => {
+  const handleDecision = async (decision) => {
     setDecisionLoading(true);
-    setTimeout(() => {
-      setDecisionLoading(false);
+    setDecisionError(null);
+
+    if (decision === 'accepted') {
+      const gp = Number(greenPoints);
+      if (gp < 0 || gp > maxGreenPoints) {
+        setDecisionError(`Green points must be between 0 and ${maxGreenPoints}`);
+        setDecisionLoading(false);
+        return;
+      }
+    }
+
+    try {
+      const formData = new FormData();
+      formData.append('status', decision);
+      const gp = decision === 'accepted' ? Number(greenPoints) : 0;
+      formData.append('green_points', gp.toString());
+
+      const res = await fetch(`${apiBase}/api/challenge-submissions/${viewing.id}`, {
+        method: 'PUT',
+        body: formData,
+      });
+
+      if (!res.ok) {
+        const errorData = await res.json().catch(() => ({}));
+        throw new Error(errorData.error || 'Failed to update submission');
+      }
+
+      // Update local submissions
+      setSubmissions(prev => prev.map(s => s.id === viewing.id ? { ...s, status: decision, green_points: gp } : s));
       setViewing(null);
       setGreenPoints("");
-    }, 1200);
+    } catch (err) {
+      setDecisionError(err.message);
+    } finally {
+      setDecisionLoading(false);
+    }
   };
 
   const filtered = submissions
@@ -434,6 +466,9 @@ export default function ViewSubmissions() {
             </div>
             {decisionLoading && (
               <div className="text-green-700 text-md pt-2">Updating...</div>
+            )}
+            {decisionError && (
+              <div className="text-red-700 text-md pt-2">{decisionError}</div>
             )}
           </div>
         </div>

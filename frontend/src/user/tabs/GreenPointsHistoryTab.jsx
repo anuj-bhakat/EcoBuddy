@@ -17,7 +17,6 @@ export default function GreenPointsHistoryTab() {
       try {
         const gpRes = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/greenpoints/user/${userId}`);
         setCurrentPoints(gpRes.data.green_points || gpRes.data.greenPoints);
-
         const transRes = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/greenpoints/transactions/${userId}`);
         setHistory(Array.isArray(transRes.data.transactions) ? transRes.data.transactions : []);
       } catch (error) {
@@ -222,3 +221,4 @@ export default function GreenPointsHistoryTab() {
     </div>
   );
 }
+

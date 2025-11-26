@@ -124,3 +124,80 @@ export const getChallengesByCreator = async (req, res) => {
     res.status(400).json({ error: error.message });
   }
 };
+
+
+
+// Maps status from submission to view-style
+const parseStatus = (submissionStatus) => {
+  if (submissionStatus === 'accepted') return 'completed';
+  if (submissionStatus === 'submitted') return 'ongoing';
+  return null;
+};
+
+export const getUserChallenges = async (req, res) => {
+  try {
+    const { user_id } = req.params;
+
+    // 1. Get submissions
+    const submissions = await challengeService.getUserChallengeSubmissions(user_id);
+
+    // 2. Get all unique challenge ids
+    const challengeIds = [...new Set(submissions.map(sub => sub.challenge_id))];
+
+    // 3. Get challenge details for those IDs
+    const challenges = await challengeService.getChallengesByIds(challengeIds);
+
+    // 4. Get all unique creator ids
+    const creatorIds = [...new Set(challenges.map(c => c.creator_id))];
+    const users = await challengeService.getUsersByIds(creatorIds);
+
+    // Build response
+    const challengesMap = Object.fromEntries(challenges.map(c => [c.id, c]));
+    const usersMap = Object.fromEntries(users.map(u => [u.id, u]));
+
+    // 5. Build list
+    const result = submissions
+      .filter(sub => sub.status === 'submitted' || sub.status === 'accepted')
+      .map(sub => {
+        const challenge = challengesMap[sub.challenge_id] || {};
+        const creator = challenge.creator_id ? usersMap[challenge.creator_id] : null;
+        return {
+          submission_id: sub.id,
+          challenge_id: challenge.id,
+          title: challenge.title,
+          description: challenge.description,
+          category: challenge.category,
+          difficulty: challenge.difficulty,
+          green_points: challenge.green_points,
+          start_date: challenge.start_date,
+          end_date: challenge.end_date,
+          challenge_status: challenge.status,
+          max_participants: challenge.max_participants,
+          total_registered: challenge.total_registered,
+          total_participated: challenge.total_participated,
+          created_at: challenge.created_at,
+          updated_at: challenge.updated_at,
+          creator: creator
+            ? {
+                id: creator.id,
+                full_name: creator.full_name,
+                email: creator.email,
+                created_at: creator.created_at,
+                updated_at: creator.updated_at
+              } : null,
+          submission: {
+            submitted_at: sub.submitted_at,
+            status: parseStatus(sub.status),
+            green_points_awarded: sub.green_points,
+            text_submission: sub.text_submission,
+            image_urls: sub.image_urls,
+            video_url: sub.video_url
+          }
+        };
+      });
+
+    res.json(result);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};

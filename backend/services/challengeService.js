@@ -404,3 +404,48 @@ export const autoUpdateChallengeStatus = async () => {
   }
 };
 
+// 1. Get all the challenge submissions for a user (with 'submitted' and 'accepted' status)
+export const getUserChallengeSubmissions = async (user_id) => {
+  const { data, error } = await supabase
+    .from('challenge_submissions')
+    .select('*')
+    .eq('user_id', user_id)
+    .in('status', ['submitted', 'accepted'])
+    .order('submitted_at', { ascending: false });
+  if (error) throw new Error(error.message);
+  return data;
+};
+
+// 2. Bulk fetch challenges for given challenge IDs (for efficiency)
+export const getChallengesByIds = async (ids) => {
+  if (!ids.length) return [];
+  const { data, error } = await supabase
+    .from('challenges')
+    .select('*')
+    .in('id', ids);
+  if (error) throw new Error(error.message);
+  return data;
+};
+
+// 3. Bulk fetch users (for creators)
+export const getUsersByIds = async (ids) => {
+  if (!ids.length) return [];
+  const { data, error } = await supabase
+    .from('users')
+    .select('id, full_name, email, created_at, updated_at')
+    .in('id', ids);
+  if (error) throw new Error(error.message);
+  return data;
+};
+
+// Get submissions for a user & challenge
+export const getSubmissionForUserAndChallenge = async (user_id, challenge_id) => {
+  const { data, error } = await supabase
+    .from('challenge_submissions')
+    .select('*')
+    .eq('user_id', user_id)
+    .eq('challenge_id', challenge_id)
+    .single();
+  // If no submission, error is expected; just return null
+  return (error || !data) ? null : data;
+};

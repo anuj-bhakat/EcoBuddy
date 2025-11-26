@@ -18,7 +18,7 @@ const Cart = ({ cartItems, onClose, onRemoveFromCart, onUpdateQuantity, onClearC
     navigate("/checkout", { state: { cartItems } });
   };
 
-  const totalPoints = cartItems.reduce((sum, item) => sum + (item.price_points * item.quantity), 0);
+  const totalPoints = cartItems.reduce((sum, item) => sum + (item.green_points * item.quantity), 0);
   const totalItems = cartItems.reduce((sum, item) => sum + item.quantity, 0);
   const totalProducts = cartItems.length;
 
@@ -143,7 +143,7 @@ const Cart = ({ cartItems, onClose, onRemoveFromCart, onUpdateQuantity, onClearC
 
                       {/* Price Points */}
                       <div className="text-lg font-bold text-green-800">
-                        {item.price_points} pts
+                        {item.green_points} pts
                       </div>
                     </div>
 

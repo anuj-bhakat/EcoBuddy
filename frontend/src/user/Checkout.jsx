@@ -21,16 +21,34 @@ const Checkout = () => {
 
   // Calculate totals
   const items = singleProduct ? [singleProduct] : cartItems;
-  const subtotal = items.reduce((sum, item) => sum + (item.price_points * (item.quantity || 1)), 0);
+  const subtotal = items.reduce((sum, item) => sum + (item.green_points * (item.quantity || 1)), 0);
   const deliveryFee = subtotal > 50 ? 0 : 5; // Free delivery over 50 points
   const total = subtotal + deliveryFee;
 
-  // Mock user green points (in real app, fetch from API)
+  // Fetch user green points from API
   useEffect(() => {
-    // Simulate API call
-    setTimeout(() => {
-      setUserGreenPoints(75); // Mock data
-    }, 500);
+    const fetchUserGreenPoints = async () => {
+      try {
+        const userId = localStorage.getItem("user_id");
+        if (!userId) {
+          console.error("User ID not found in localStorage");
+          return;
+        }
+
+        const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/greenpoints/user/${userId}`);
+        if (!response.ok) {
+          throw new Error(`Failed to fetch green points: ${response.status}`);
+        }
+
+        const data = await response.json();
+        setUserGreenPoints(data.green_points || 0);
+      } catch (error) {
+        console.error("Error fetching user green points:", error);
+        setUserGreenPoints(0); // Set to 0 on error
+      }
+    };
+
+    fetchUserGreenPoints();
   }, []);
 
   const handleAddressChange = (field, value) => {
@@ -55,11 +73,79 @@ const Checkout = () => {
 
     setLoading(true);
 
-    // Simulate order placement
-    setTimeout(() => {
+    try {
+      const userId = localStorage.getItem("user_id");
+      if (!userId) {
+        alert("User not authenticated. Please log in again.");
+        setLoading(false);
+        return;
+      }
+
+      // Prepare order data
+      const orderData = {
+        product_ids: items.map(item => item.id),
+        user_id: userId,
+        total_green_points: total,
+        order_date: new Date().toISOString(),
+        status: "processing",
+        address: {
+          line1: address.street,
+          city: address.city,
+          state: address.state,
+          postal_code: address.zipCode,
+          country: address.country
+        }
+      };
+
+      // Make API call to place order
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/orders`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(orderData)
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || `Failed to place order: ${response.status}`);
+      }
+
+      const orderResult = await response.json();
+      console.log('Order placed successfully:', orderResult);
+
+      // Deduct green points after successful order placement
+      try {
+        const adjustResponse = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/greenpoints/user/adjust`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            user_id: userId,
+            change_amount: -total, // Negative value to deduct points
+            reason: `Placed Order : ${orderResult.order_id}`
+          })
+        });
+
+        if (!adjustResponse.ok) {
+          console.error('Failed to deduct green points, but order was placed');
+          // Don't throw error here as order was successful
+        } else {
+          console.log('Green points deducted successfully');
+        }
+      } catch (adjustError) {
+        console.error('Error deducting green points:', adjustError);
+        // Don't fail the order placement if points deduction fails
+      }
+
       setOrderPlaced(true);
+    } catch (error) {
+      console.error('Error placing order:', error);
+      alert(`Failed to place order: ${error.message}`);
+    } finally {
       setLoading(false);
-    }, 2000);
+    }
   };
 
   const canPlaceOrder = address.street && address.city && address.state && address.zipCode && address.country && userGreenPoints >= total;
@@ -75,7 +161,8 @@ const Checkout = () => {
             </div>
             <h2 className="text-2xl font-bold text-green-800 mb-4">Order Placed Successfully!</h2>
             <p className="text-gray-600 mb-6">
-              Your eco-friendly products will be delivered within 3-5 business days.
+              Your eco-friendly products will be delivered as soon as possible.
+              Thank you for supporting sustainable living!
             </p>
             <div className="space-y-3">
               <button
@@ -137,7 +224,7 @@ const Checkout = () => {
                       </div>
                       <div className="text-right">
                         <div className="font-bold text-green-800">
-                          {item.price_points * (item.quantity || 1)} pts
+                          {item.green_points * (item.quantity || 1)} pts
                         </div>
                       </div>
                     </div>

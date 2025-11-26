@@ -29,7 +29,7 @@ export function CreatorLogin() {
       setMessage({ type: "success", text: "Login successful! Redirecting..." });
 
       setTimeout(() => {
-        navigate("/creator-home");
+        navigate("/creator/create-challenge");
       }, 1000);
     } catch (error) {
       setMessage({
@@ -60,13 +60,21 @@ export function CreatorLogin() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-blue-50 px-4">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-green-100 via-green-50 to-green-200 px-4 relative overflow-hidden">
+      <div className="absolute right-4 bottom-4 opacity-15 pointer-events-none z-0 flex flex-col items-center space-y-5 text-green-400">
+        <svg width="44" height="34" viewBox="0 0 44 34" fill="currentColor">
+          <ellipse cx="22" cy="17" rx="20" ry="10" />
+        </svg>
+        <svg width="60" height="45" viewBox="0 0 60 45" fill="currentColor">
+          <ellipse cx="30" cy="22.5" rx="28" ry="15" />
+        </svg>
+      </div>
       <form
         onSubmit={handleSubmit}
-        className="w-full max-w-sm bg-white rounded-xl border border-gray-200 shadow-md px-8 py-6 font-sans"
+        className="w-full max-w-sm bg-white rounded-xl border border-green-200 shadow-xl px-8 py-6 font-sans relative z-10"
         noValidate
       >
-        <h2 className="text-3xl font-semibold mb-8 text-center text-blue-700 tracking-wide">
+        <h2 className="text-3xl font-semibold mb-8 text-center text-green-700 tracking-wide">
           Creator Login
         </h2>
 
@@ -97,7 +105,7 @@ export function CreatorLogin() {
             onChange={handleEmailChange}
             required
             placeholder="Email address"
-            className="w-full rounded-lg border border-gray-300 py-3 px-4 text-gray-700 placeholder-gray-400 font-normal text-base transition focus:outline-none focus:border-blue-600 focus:shadow-lg"
+            className="w-full rounded-lg border border-gray-300 py-3 px-4 text-gray-700 placeholder-gray-400 font-normal text-base transition focus:outline-none focus:border-green-600 focus:shadow-lg"
           />
         </div>
 
@@ -122,10 +130,10 @@ export function CreatorLogin() {
         <button
             type="submit"
             disabled={loading}
-            className={`w-full bg-blue-600 text-white text-lg font-semibold rounded-lg py-3 transition-transform duration-200 focus:outline-none focus:ring-4 focus:ring-blue-400 ${
+            className={`w-full bg-green-600 text-white text-lg font-semibold rounded-lg py-3 transition-transform duration-200 focus:outline-none focus:ring-4 focus:ring-green-400 ${
                 loading
-                ? "cursor-not-allowed opacity-80 hover:bg-blue-600 scale-100"
-                : "hover:bg-blue-700 hover:scale-105 cursor-pointer"
+                ? "cursor-not-allowed opacity-80 hover:bg-green-600 scale-100"
+                : "hover:bg-green-700 hover:scale-105 cursor-pointer"
             }`}
             >
             {loading ? "Logging in..." : "Login"}
@@ -135,7 +143,7 @@ export function CreatorLogin() {
           Don't have an account?{" "}
           <button
             onClick={handleSignupNavigation}
-            className="text-blue-700 font-medium hover:underline focus:outline-none"
+            className="text-green-700 font-medium hover:underline focus:outline-none"
             type="button"
           >
             Sign up

@@ -26,4 +26,9 @@ router.get('/', challengeController.getAllChallenges);
 router.get('/:id/detail', challengeController.getChallengeDetail);
 router.get('/creator/:creator_id', challengeController.getChallengesByCreator);
 
+
+// GET: View all user's ongoing & completed challenges with details
+router.get('/user/:user_id', challengeController.getUserChallenges);
+
+
 export default router;

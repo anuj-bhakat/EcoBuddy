@@ -4,132 +4,13 @@ import Navbar from "./Navbar";
 import Cart from "./Cart";
 import { FaLeaf, FaChevronLeft, FaChevronRight, FaSearch, FaSortAmountDown, FaSortAmountUp, FaSortAlphaDown, FaSortAlphaUp, FaShoppingCart } from "react-icons/fa";
 
-const sampleProducts = [
-  {
-    id: "1a2b3c4d",
-    name: "Bamboo Toothbrush",
-    description:
-      "Eco-friendly bamboo toothbrush with soft bristles. 100% biodegradable handle.",
-    price_points: 10,
-    images: [
-      "https://m.media-amazon.com/images/I/81p8pNstgGL._UF1000,1000_QL80_.jpg",
-      "https://5.imimg.com/data5/SELLER/Default/2021/11/RP/GI/TL/140258896/natural-bamboo-tooth-brush.png",
-    ],
-    created_at: "2025-09-01T10:00:00Z",
-  },
-  {
-    id: "5e6f7g8h",
-    name: "Reusable Grocery Bag",
-    description:
-      "Strong and washable reusable grocery bag made from organic cotton and recycled materials.",
-    price_points: 25,
-    images: [
-      "https://satopradhan.com/cdn/shop/products/grocery-bag-made-with-heavy-duty-canvas-cloth-thoughtfully-designed-reusable-shopping-bag-with-two-printed-sides-satopradhan-1-31091186401506.png?v=1696575016",
-      "https://thehumanbean.com/cdn/shop/products/EarthDay.jpg?v=1724105985&width=1946",
-    ],
-    created_at: "2025-08-15T08:30:00Z",
-  },
-  {
-    id: "9i0j1k2l",
-    name: "Solar Powered Lantern",
-    description:
-      "Portable solar lantern perfect for camping and emergency lighting, with long-lasting LED bulbs.",
-    price_points: 100,
-    images: [
-      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQs0oG7eTGPkleQHunbQp4AQzw6jsdjpENKbA&s",
-      "https://5.imimg.com/data5/BZ/AX/QP/SELLER-20876600/solar-laltern-500x500.jpg",
-    ],
-    created_at: "2025-09-10T12:45:00Z",
-  },
-  {
-    id: "2b4c5d6e",
-    name: "Eco-Friendly Water Bottle",
-    description:
-      "Sustainable and reusable water bottle made from recycled materials.",
-    price_points: 15,
-    images: [
-      "https://i.pinimg.com/564x/c8/03/6a/c8036a4699f53dfc15ec88cafb2dc512.jpg",
-      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS13keLQVbsGletMs9CZ1ZWRuf6hwecRd7JIkwVKI26Q-XfkraKFslSfVgCjUu8DclPyhU&usqp=CAU",
-    ],
-    created_at: "2025-08-10T14:10:00Z",
-  },
-  {
-    id: "3f4g5h6i",
-    name: "Bamboo Cutlery Set",
-    description:
-      "Portable and eco-friendly bamboo cutlery set, perfect for picnics and travel.",
-    price_points: 20,
-    images: [
-      "https://envaplax.com/cdn/shop/files/BambooCutlerySet_1__1.jpg?v=1704435503&width=1200",
-      "https://m.media-amazon.com/images/I/81JPUvZ3AhS._UF894,1000_QL80_.jpg",
-    ],
-    created_at: "2025-08-25T12:30:00Z",
-  },
-  {
-    id: "4h5i6j7k",
-    name: "Compostable Plates",
-    description:
-      "Biodegradable plates made from sugarcane fiber. Perfect for eco-friendly parties.",
-    price_points: 30,
-    images: [
-      "https://www.mystore.in/s/62ea2c599d1398fa16dbae0a/6729b50f3c620a03c399722f/round-6-bulk-640x640.png",
-      "https://m.media-amazon.com/images/I/81RTpU5hr5L.jpg",
-    ],
-    created_at: "2025-09-03T09:50:00Z",
-  },
-  {
-    id: "5j6k7l8m",
-    name: "Recycled Paper Notebooks",
-    description:
-      "Eco-friendly notebooks made from 100% recycled paper. Perfect for jotting down your ideas.",
-    price_points: 12,
-    images: [
-      "https://www.pack-mate.in/cdn/shop/files/packmate-spiral-notebook-ruled-pack-of-5-made-from-100-recycled-paper.webp?v=1728120906",
-      "https://m.media-amazon.com/images/I/817mFy4yYkL._UF1000,1000_QL80_.jpg",
-    ],
-    created_at: "2025-07-20T16:10:00Z",
-  },
-  {
-    id: "6k7l8m9n",
-    name: "Eco-Friendly Laundry Detergent",
-    description:
-      "Biodegradable laundry detergent that’s tough on stains but gentle on the planet.",
-    price_points: 18,
-    images: [
-      "https://m.media-amazon.com/images/I/61Ii0ySBKOL._UF1000,1000_QL80_.jpg",
-      "https://m.media-amazon.com/images/I/61gj7Rz8Y+L._UF1000,1000_QL80_.jpg",
-    ],
-    created_at: "2025-06-15T10:00:00Z",
-  },
-  {
-    id: "7l8m9n0o",
-    name: "Sustainable Beach Towel",
-    description:
-      "Made from recycled plastic bottles, this beach towel is both soft and eco-friendly.",
-    price_points: 40,
-    images: [
-      "https://encrypted-tbn0.gstatic.com/shopping?q=tbn:ANd9GcTTbwu_chNnQMCPmC47UWpvQDNvfoANy4ECYDD4MQreBndVrsDVzw8P6xNamKwwYCyDemuzKISEx4yxQ60YkGfX2Oq3Pm-RStzY8VDo-Ogy6XK80bNytyWc",
-      "https://encrypted-tbn2.gstatic.com/shopping?q=tbn:ANd9GcTYqi7-yb8KhYpm7H3T5JSapfb5vBLGcJHld7SDANGjiBnbbVH8QUNUUIf1keR6PiCWVY-dXoQfQum7I3URlceKi13T-3s8IthFTeUDoUGlVYldO8sudWx_Hw",
-    ],
-    created_at: "2025-07-25T12:45:00Z",
-  },
-  {
-    id: "8m9n0o1p",
-    name: "Recycled Plastic Phone Case",
-    description:
-      "Phone case made from recycled plastic bottles. Protect your phone while protecting the planet.",
-    price_points: 22,
-    images: [
-      "https://m.media-amazon.com/images/I/61AGSu9b8jL._UF1000,1000_QL80_.jpg",
-      "https://m.media-amazon.com/images/I/51QaAmutntL._UF1000,1000_QL80_.jpg",
-    ],
-    created_at: "2025-05-19T13:00:00Z",
-  },
-];
-
+const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
 export default function EcoProducts() {
   const navigate = useNavigate();
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [mainImageIndex, setMainImageIndex] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
@@ -140,6 +21,29 @@ export default function EcoProducts() {
   const [showCart, setShowCart] = useState(false);
   const [alertShown, setAlertShown] = useState(false);
   const itemsPerPage = 8;
+
+  // Fetch products from API
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+        const response = await fetch(`${baseUrl}/products/available`);
+        if (!response.ok) {
+          throw new Error(`Failed to fetch products: ${response.status}`);
+        }
+        const data = await response.json();
+        setProducts(data);
+      } catch (err) {
+        setError(err.message);
+        console.error('Error fetching products:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProducts();
+  }, []);
 
   useEffect(() => {
     if (selectedProduct) {
@@ -158,7 +62,7 @@ export default function EcoProducts() {
 
   // Filter and sort products
   const filteredAndSortedProducts = useMemo(() => {
-    let filtered = sampleProducts.filter(product =>
+    let filtered = products.filter(product =>
       product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       product.description.toLowerCase().includes(searchTerm.toLowerCase())
     );
@@ -166,9 +70,9 @@ export default function EcoProducts() {
     filtered.sort((a, b) => {
       if (sortBy === "points") {
         if (sortOrder === "asc") {
-          return a.price_points - b.price_points;
+          return a.green_points - b.green_points;
         } else {
-          return b.price_points - a.price_points;
+          return b.green_points - a.green_points;
         }
       } else if (sortBy === "name") {
         const nameA = a.name.toLowerCase();
@@ -183,7 +87,7 @@ export default function EcoProducts() {
     });
 
     return filtered;
-  }, [searchTerm, sortOrder, sortBy]);
+  }, [products, searchTerm, sortOrder, sortBy]);
 
   const totalPages = Math.ceil(filteredAndSortedProducts.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
@@ -337,42 +241,82 @@ export default function EcoProducts() {
             minHeight: selectedProduct ? "400px" : "auto"
           }}
         >
-          {currentProducts.map((product) => (
-            <div
-              key={product.id}
-              className="bg-white rounded-xl shadow-sm cursor-pointer hover:shadow-xl hover:-translate-y-2 transition-all duration-300 p-4 flex flex-col border border-gray-100 hover:border-green-300 group overflow-hidden"
-              onClick={() => setSelectedProduct(product)}
-              role="button"
-              tabIndex={0}
-              onKeyPress={(e) => e.key === "Enter" && setSelectedProduct(product)}
-            >
-              <div className="relative mb-4 overflow-hidden rounded-xl">
-                <img
-                  src={product.images[0]}
-                  alt={product.name}
-                  className="w-full h-40 md:h-44 object-cover group-hover:scale-105 transition-transform duration-500"
-                  loading="lazy"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-green-600/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                <div className="absolute top-3 right-3 bg-green-600 text-white px-2 py-1 rounded-full text-xs font-bold shadow-lg">
-                  <FaLeaf className="w-3 h-3 inline mr-1" />
-                  {product.price_points}
+          {loading ? (
+            // Loading state
+            Array.from({ length: 8 }).map((_, index) => (
+              <div key={index} className="bg-white rounded-xl shadow-sm p-4 flex flex-col border border-gray-100 animate-pulse">
+                <div className="relative mb-4 overflow-hidden rounded-xl bg-gray-200 h-40 md:h-44"></div>
+                <div className="h-6 bg-gray-200 rounded mb-2"></div>
+                <div className="flex-grow mb-4">
+                  <div className="h-4 bg-gray-200 rounded mb-2"></div>
+                  <div className="h-4 bg-gray-200 rounded w-3/4"></div>
                 </div>
+                <div className="h-4 bg-gray-200 rounded w-1/2"></div>
               </div>
-              <h2 className="text-lg font-bold text-green-800 mb-2 truncate group-hover:text-green-700 transition-colors leading-tight">
-                {product.name}
-              </h2>
-              <p className="text-gray-600 flex-grow mb-4 leading-relaxed text-sm line-clamp-2 font-normal">
-                {product.description}
-              </p>
-              <div className="mt-auto flex items-center justify-center">
-                <div className="text-green-600 text-sm font-semibold opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1">
-                  <span>View Details</span>
-                  <span className="text-lg">→</span>
-                </div>
+            ))
+          ) : error ? (
+            // Error state
+            <div className="col-span-full flex items-center justify-center py-12">
+              <div className="text-center">
+                <div className="text-red-500 text-6xl mb-4">⚠️</div>
+                <h3 className="text-xl font-semibold text-gray-800 mb-2">Failed to load products</h3>
+                <p className="text-gray-600 mb-4">{error}</p>
+                <button
+                  onClick={() => window.location.reload()}
+                  className="bg-green-600 text-white px-6 py-2 rounded-lg font-semibold hover:bg-green-700 transition-colors"
+                >
+                  Try Again
+                </button>
               </div>
             </div>
-          ))}
+          ) : currentProducts.length === 0 ? (
+            // No products found
+            <div className="col-span-full flex items-center justify-center py-12">
+              <div className="text-center">
+                <div className="text-gray-400 text-6xl mb-4">🛒</div>
+                <h3 className="text-xl font-semibold text-gray-800 mb-2">No products found</h3>
+                <p className="text-gray-600">Try adjusting your search or filters</p>
+              </div>
+            </div>
+          ) : (
+            // Products
+            currentProducts.map((product) => (
+              <div
+                key={product.id}
+                className="bg-white rounded-xl shadow-sm cursor-pointer hover:shadow-xl hover:-translate-y-2 transition-all duration-300 p-4 flex flex-col border border-gray-100 hover:border-green-300 group overflow-hidden"
+                onClick={() => setSelectedProduct(product)}
+                role="button"
+                tabIndex={0}
+                onKeyPress={(e) => e.key === "Enter" && setSelectedProduct(product)}
+              >
+                <div className="relative mb-4 overflow-hidden rounded-xl">
+                  <img
+                    src={product.images[0]}
+                    alt={product.name}
+                    className="w-full h-40 md:h-44 object-cover group-hover:scale-105 transition-transform duration-500"
+                    loading="lazy"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-green-600/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                  <div className="absolute top-3 right-3 bg-green-600 text-white px-2 py-1 rounded-full text-xs font-bold shadow-lg">
+                    <FaLeaf className="w-3 h-3 inline mr-1" />
+                    {product.green_points}
+                  </div>
+                </div>
+                <h2 className="text-lg font-bold text-green-800 mb-2 truncate group-hover:text-green-700 transition-colors leading-tight">
+                  {product.name}
+                </h2>
+                <p className="text-gray-600 flex-grow mb-4 leading-relaxed text-sm line-clamp-2 font-normal">
+                  {product.description}
+                </p>
+                <div className="mt-auto flex items-center justify-center">
+                  <div className="text-green-600 text-sm font-semibold opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1">
+                    <span>View Details</span>
+                    <span className="text-lg">→</span>
+                  </div>
+                </div>
+              </div>
+            ))
+          )}
         </div>
 
         {/* Pagination */}
@@ -478,7 +422,7 @@ export default function EcoProducts() {
                 <div className="mb-4 sm:mb-6">
                   <span className="inline-flex items-center px-4 py-2 rounded-full text-sm font-semibold bg-green-100 text-green-800">
                     <FaLeaf className="w-4 h-4 mr-2" />
-                    {selectedProduct.price_points} Green Points
+                    {selectedProduct.green_points} Green Points
                   </span>
                   <p className="text-green-500 text-xs mt-1 font-normal">Required to purchase</p>
                 </div>
