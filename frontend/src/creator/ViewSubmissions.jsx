@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import CreatorNavbar from "./CreatorNavbar";
+import axios from "axios";
 import {
   FaLeaf,
   FaMinus,
@@ -264,6 +265,21 @@ export default function ViewSubmissions() {
 
       // Update local submissions
       setSubmissions(prev => prev.map(s => s.id === viewing.id ? { ...s, status: decision, green_points: gp } : s));
+
+      // If accepting and status was not accepted, adjust green points
+      if (decision === 'accepted' && viewing.status !== 'accepted') {
+        try {
+          await axios.put(`${apiBase}/api/greenpoints/user/adjust`, {
+            user_id: viewing.user_id,
+            change_amount: Number(greenPoints),
+            reason: 'Challenge Completed',
+          });
+        } catch (err) {
+          console.error('Failed to adjust green points:', err);
+          // Don't fail the submission update
+        }
+      }
+
       setViewing(null);
       setGreenPoints("");
     } catch (err) {

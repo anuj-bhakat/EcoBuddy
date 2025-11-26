@@ -119,6 +119,22 @@ export default function ChallengeDetails({ challengeId, onClose }) {
     return () => clearInterval(autoplayTimer.current);
   }, [challenge]);
 
+  // Preload adjacent images to reduce buffering
+  useEffect(() => {
+    if (!challenge || challenge.images.length === 0) return;
+    const preloadImages = (indices) => {
+      indices.forEach(idx => {
+        if (idx >= 0 && idx < challenge.images.length) {
+          const img = new Image();
+          img.src = challenge.images[idx].image_url;
+        }
+      });
+    };
+    const nextIdx = (currentImageIdx + 1) % challenge.images.length;
+    const prevIdx = (currentImageIdx - 1 + challenge.images.length) % challenge.images.length;
+    preloadImages([nextIdx, prevIdx]);
+  }, [currentImageIdx, challenge]);
+
   const checkRegistrationStatus = async () => {
     const userId = localStorage.getItem("user_id");
     setRegStatusError("");

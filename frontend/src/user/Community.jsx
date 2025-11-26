@@ -493,9 +493,9 @@ export default function Community() {
                           <span className={`px-2 py-1 text-xs rounded-full font-medium ${getDifficultyColor(post.challenge?.difficulty || 'Medium')}`}>
                             {post.challenge?.difficulty || 'Medium'}
                           </span>
-                          <span className="px-2 py-1 bg-green-600 text-white text-xs rounded-full font-semibold ml-auto">
+                          {/* <span className="px-2 py-1 bg-green-600 text-white text-xs rounded-full font-semibold ml-auto">
                             +{post.green_points_awarded || 0} pts
-                          </span>
+                          </span> */}
                         </div>
 
                         {/* Challenge Title */}

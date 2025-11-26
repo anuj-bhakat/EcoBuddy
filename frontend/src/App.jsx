@@ -11,7 +11,7 @@ import EcoProducts from './user/EcoProducts';
 import LandingPage from './LandingPage';
 import Challenges from './user/Challenges';
 import Dashboard from './user/Dashboard';
-// import TestGreenPoints from './test/TestGreenPoints';
+// import TestGreenPoints from './test/TestGreenPoins';
 import Community from './user/Community';
 import MyActivity from './user/MyActivity';
 // import AdminSignup from './test/AdminSignup';
