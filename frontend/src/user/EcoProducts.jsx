@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useMemo } from "react";
+import { useNavigate } from "react-router-dom";
 import Navbar from "./Navbar";
 import Cart from "./Cart";
 import { FaLeaf, FaChevronLeft, FaChevronRight, FaSearch, FaSortAmountDown, FaSortAmountUp, FaSortAlphaDown, FaSortAlphaUp, FaShoppingCart } from "react-icons/fa";
@@ -128,6 +129,7 @@ const sampleProducts = [
 
 
 export default function EcoProducts() {
+  const navigate = useNavigate();
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [mainImageIndex, setMainImageIndex] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
@@ -136,6 +138,7 @@ export default function EcoProducts() {
   const [sortBy, setSortBy] = useState("points"); // "points" or "name"
   const [cartItems, setCartItems] = useState([]);
   const [showCart, setShowCart] = useState(false);
+  const [alertShown, setAlertShown] = useState(false);
   const itemsPerPage = 8;
 
   useEffect(() => {
@@ -199,7 +202,7 @@ export default function EcoProducts() {
   const addToCart = (product) => {
     setCartItems(prevItems => {
       const existingItem = prevItems.find(item => item.id === product.id);
-      
+
       if (existingItem) {
         // Product already in cart, increase quantity
         return prevItems.map(item =>
@@ -210,8 +213,13 @@ export default function EcoProducts() {
       } else {
         // New product, check limit
         if (prevItems.length >= 3) {
-          // Limit reached, show alert or notification
-          alert('You can only add up to 3 different products per order');
+          // Limit reached, show alert only once
+          if (!alertShown) {
+            setAlertShown(true);
+            alert('You can only add up to 3 different products per order');
+            // Reset alert flag after a short delay
+            setTimeout(() => setAlertShown(false), 2000);
+          }
           return prevItems;
         }
         return [...prevItems, { ...product, quantity: 1 }];
@@ -245,6 +253,13 @@ export default function EcoProducts() {
     return cartItems.reduce((sum, item) => sum + item.quantity, 0);
   };
 
+  const handleBuyNow = (product) => {
+    // Reset body styles before navigating to prevent scroll issues
+    document.body.style.overflow = "";
+    document.body.style.paddingRight = "";
+    navigate("/checkout", { state: { singleProduct: { ...product, quantity: 1 } } });
+  };
+
   return (
     <div>
       <Navbar />
@@ -275,46 +290,45 @@ export default function EcoProducts() {
         </div>
 
         {/* Search and Sort Controls */}
-        <div className="max-w-7xl mx-auto px-4 mb-6 flex flex-col lg:flex-row gap-6 items-stretch lg:items-center relative z-10">
+        <div className="max-w-7xl mx-auto px-4 mb-8 flex flex-col lg:flex-row gap-4 items-stretch lg:items-center relative z-10">
           <div className="relative flex-1 min-w-0">
             <FaSearch className="absolute left-4 top-1/2 transform -translate-y-1/2 text-green-500 w-5 h-5" />
             <input
               type="text"
-              placeholder="Search products..."
+              placeholder="Search eco-friendly products..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-12 pr-6 py-3 border border-green-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 bg-white/90 backdrop-blur-sm text-gray-700 shadow-sm text-base h-[46px] font-normal placeholder:text-gray-400"
-              style={{minWidth: '300px'}}
+              className="w-full pl-12 pr-6 py-4 border border-green-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 bg-white shadow-sm text-gray-700 text-base font-normal placeholder:text-gray-400"
             />
           </div>
-          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 flex-shrink-0">
-            <div className="flex items-center gap-3">
-              <span className="text-green-700 font-normal text-base whitespace-nowrap">Sort by:</span>
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 flex-shrink-0">
+            <div className="flex items-center gap-2 flex-1 sm:flex-none">
+              <span className="text-green-700 font-medium text-sm whitespace-nowrap">Sort by:</span>
               <select
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value)}
-                className="px-4 py-3 border border-green-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 bg-white/90 backdrop-blur-sm text-green-700 text-base font-normal min-w-[120px] h-[46px]"
+                className="px-3 py-4 border border-green-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 bg-white shadow-sm text-green-700 text-sm font-medium min-w-[110px] flex-1 sm:flex-none"
               >
                 <option value="points">Points</option>
                 <option value="name">Name</option>
               </select>
+              <button
+                onClick={() => setSortOrder(sortOrder === "asc" ? "desc" : "asc")}
+                className="flex items-center gap-2 px-4 py-4 bg-green-600 text-white rounded-xl hover:bg-green-700 transition-colors shadow-sm text-sm font-semibold whitespace-nowrap ml-2"
+              >
+                {sortBy === "name" ? (
+                  sortOrder === "asc" ? <FaSortAlphaUp className="w-4 h-4" /> : <FaSortAlphaDown className="w-4 h-4" />
+                ) : (
+                  sortOrder === "asc" ? <FaSortAmountUp className="w-4 h-4" /> : <FaSortAmountDown className="w-4 h-4" />
+                )}
+                {sortBy === "name" ? (sortOrder === "asc" ? "A-Z" : "Z-A") : (sortOrder === "asc" ? "Low-High" : "High-Low")}
+              </button>
             </div>
-            <button
-              onClick={() => setSortOrder(sortOrder === "asc" ? "desc" : "asc")}
-              className="flex items-center gap-3 px-6 py-3 bg-green-100 text-green-700 rounded-lg hover:bg-green-200 transition-colors shadow-sm text-base font-semibold whitespace-nowrap h-[46px]"
-            >
-              {sortBy === "name" ? (
-                sortOrder === "asc" ? <FaSortAlphaUp className="w-5 h-5" /> : <FaSortAlphaDown className="w-5 h-5" />
-              ) : (
-                sortOrder === "asc" ? <FaSortAmountUp className="w-5 h-5" /> : <FaSortAmountDown className="w-5 h-5" />
-              )}
-              {sortBy === "name" ? (sortOrder === "asc" ? "A-Z" : "Z-A") : (sortOrder === "asc" ? "Low-High" : "High-Low")}
-            </button>
           </div>
         </div>
 
         <div
-          className={`grid px-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 md:gap-8 transition-all duration-300 relative z-10 ${
+          className={`grid px-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6 transition-all duration-300 relative z-10 ${
             selectedProduct ? "blur-sm pointer-events-none select-none" : ""
           }`}
           style={{
@@ -326,34 +340,35 @@ export default function EcoProducts() {
           {currentProducts.map((product) => (
             <div
               key={product.id}
-              className="bg-white rounded-lg shadow-md cursor-pointer hover:shadow-lg hover:-translate-y-1 transition-all duration-300 p-3 flex flex-col border border-transparent hover:border-green-300 group overflow-hidden"
+              className="bg-white rounded-xl shadow-sm cursor-pointer hover:shadow-xl hover:-translate-y-2 transition-all duration-300 p-4 flex flex-col border border-gray-100 hover:border-green-300 group overflow-hidden"
               onClick={() => setSelectedProduct(product)}
               role="button"
               tabIndex={0}
               onKeyPress={(e) => e.key === "Enter" && setSelectedProduct(product)}
             >
-              <div className="relative mb-2 overflow-hidden rounded-lg -m-3 mb-3">
+              <div className="relative mb-4 overflow-hidden rounded-xl">
                 <img
                   src={product.images[0]}
                   alt={product.name}
-                  className="w-full h-36 md:h-40 object-cover group-hover:scale-110 transition-transform duration-500 rounded-t-lg"
+                  className="w-full h-40 md:h-44 object-cover group-hover:scale-105 transition-transform duration-500"
                   loading="lazy"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                <div className="absolute inset-0 bg-gradient-to-t from-green-600/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                <div className="absolute top-3 right-3 bg-green-600 text-white px-2 py-1 rounded-full text-xs font-bold shadow-lg">
+                  <FaLeaf className="w-3 h-3 inline mr-1" />
+                  {product.price_points}
+                </div>
               </div>
-              <h2 className="text-base md:text-lg font-bold text-green-800 mb-1 truncate group-hover:text-green-700 transition-colors leading-tight">
+              <h2 className="text-lg font-bold text-green-800 mb-2 truncate group-hover:text-green-700 transition-colors leading-tight">
                 {product.name}
               </h2>
-              <p className="text-gray-600 flex-grow mb-2 md:mb-3 leading-relaxed text-xs md:text-sm line-clamp-2 font-normal">
+              <p className="text-gray-600 flex-grow mb-4 leading-relaxed text-sm line-clamp-2 font-normal">
                 {product.description}
               </p>
-              <div className="mt-auto flex items-center justify-between">
-                <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-800">
-                  <FaLeaf className="w-3 h-3 mr-1" />
-                  {product.price_points} pts
-                </span>
-                <div className="text-green-500 text-xs font-medium opacity-0 group-hover:opacity-100 transition-opacity">
-                  View Details
+              <div className="mt-auto flex items-center justify-center">
+                <div className="text-green-600 text-sm font-semibold opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1">
+                  <span>View Details</span>
+                  <span className="text-lg">→</span>
                 </div>
               </div>
             </div>
@@ -450,7 +465,7 @@ export default function EcoProducts() {
               <div className="md:w-1/2 p-4 sm:p-6 md:p-8 flex flex-col justify-center min-h-[300px] sm:min-h-[400px] md:min-h-[500px] max-h-[90vh] overflow-y-auto">
                 <button
                   onClick={() => setSelectedProduct(null)}
-                  className="ml-auto mb-4 sm:mb-6 text-green-600 font-bold hover:text-green-700 cursor-pointer focus:outline-none text-xl sm:text-2xl transition-colors"
+                  className="ml-auto mb-4 sm:mb-6 w-10 h-10 bg-gray-100 hover:bg-gray-200 text-gray-600 hover:text-gray-800 rounded-full flex items-center justify-center font-bold text-lg transition-all duration-200 shadow-sm hover:shadow-md focus:outline-none focus:ring-2 focus:ring-gray-400"
                   aria-label="Close product details"
                 >
                   ×
@@ -485,7 +500,7 @@ export default function EcoProducts() {
                       REMOVE FROM CART
                     </button>
                   ) : (
-                    <button 
+                    <button
                       onClick={() => {
                         addToCart(selectedProduct);
                         setSelectedProduct(null);
@@ -495,7 +510,10 @@ export default function EcoProducts() {
                       ADD TO CART
                     </button>
                   )}
-                  <button className="flex-1 border-2 border-green-600 py-3 sm:py-4 rounded-lg font-bold text-green-600 hover:bg-green-50 transition duration-200 focus:outline-none focus:ring-4 focus:ring-green-400 focus:ring-opacity-60 tracking-wide uppercase">
+                  <button
+                    onClick={() => handleBuyNow(selectedProduct)}
+                    className="flex-1 border-2 border-green-600 py-3 sm:py-4 rounded-lg font-bold text-green-600 hover:bg-green-50 transition duration-200 focus:outline-none focus:ring-4 focus:ring-green-400 focus:ring-opacity-60 tracking-wide uppercase"
+                  >
                     BUY IT NOW
                   </button>
                 </div>

@@ -22,6 +22,7 @@ import ModifyChallenge from './creator/ModifyChallenge';
 import ChallengeParticipation from './user/ChallengeParticipation';
 import GetSubmissions from './creator/GetSubmissions';
 import ViewSubmissions from './creator/ViewSubmissions';
+import Checkout from './user/Checkout';
 
 function App() {
   return (
@@ -49,7 +50,9 @@ function App() {
           <Route path="/creator/get-submissions" element={<GetSubmissions />} />
           <Route path="/creator/view-submissions" element={<ViewSubmissions />} />
           <Route path="/creator/modify-challenge" element={<ModifyChallenge />} />
-          
+
+          <Route path="/checkout" element={<Checkout />} />
+
           <Route path="/admin-login" element={<AdminLogin />} />
 
           {/* <Route path="/admin-signup" element={<AdminSignup />} /> */}

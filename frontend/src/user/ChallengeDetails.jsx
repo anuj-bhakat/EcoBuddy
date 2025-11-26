@@ -297,202 +297,196 @@ export default function ChallengeDetails({ challengeId, onClose }) {
     return <MdLock className="text-yellow-600 mr-2" size={24} />;
   })();
 
-  // Improved registration block
+  // Simplified registration block
   const renderRegisterBlock = (
-    <div className={`max-w-xs w-full mx-auto mb-10 ${sideBySideLayout ? "mt-8" : ""}`}>
+    <div className="bg-white rounded-lg p-6 shadow-sm border border-green-200">
       {registerMessage && (
-        <div className={`text-sm text-center mb-2 font-medium ${registerMessage.toLowerCase().includes("success") ? "text-green-700" : "text-red-600"}`}>
+        <div className={`mb-4 p-3 rounded-lg text-center font-medium ${
+          registerMessage.toLowerCase().includes("success")
+            ? "bg-green-50 text-green-800 border border-green-200"
+            : "bg-red-50 text-red-800 border border-red-200"
+        }`}>
           {registerMessage}
         </div>
       )}
+
       {regStatusError && (
-        <div className="text-sm text-center mb-2 text-red-600 font-medium">{regStatusError}</div>
+        <div className="mb-4 p-3 bg-red-50 text-red-800 rounded-lg text-center font-medium border border-red-200">
+          {regStatusError}
+        </div>
       )}
+
       {(isFull && !isRegistered) ? (
-        <div className="px-5 py-3 bg-red-50 text-red-800 rounded-lg font-semibold text-center shadow tracking-wide border border-red-300">
-          <p className="text-base font-bold mb-1">Registration Closed</p>
-          Participant limit reached.
+        <div className="text-center">
+          <div className="text-red-600 font-semibold mb-2">Registration Full</div>
+          <p className="text-gray-600 text-sm">This challenge has reached its maximum number of participants.</p>
         </div>
       ) : (isOngoing && isRegistered) ? (
-        <>
+        <div className="space-y-3">
+          <div className="text-center text-gray-600 text-sm mb-3">
+            Challenge is currently running
+          </div>
           <button
-            className="w-full px-5 py-3 bg-gray-400 text-white text-lg font-bold rounded-full shadow-lg cursor-not-allowed mb-2"
-            disabled
-          >
-            Unregister
-          </button>
-          <div className="text-sm text-center mb-2 text-gray-700">Cannot unregister during ongoing challenge.</div>
-          <button
-            className="w-full px-5 py-3 bg-blue-700 hover:bg-blue-800 text-white text-lg font-bold rounded-full shadow-lg transition-shadow focus:outline-none focus:ring-2 focus:ring-blue-600 cursor-pointer"
+            className="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-colors"
             onClick={handleParticipate}
           >
-            Participate
+            Start Participating
           </button>
-        </>
+        </div>
       ) : canRegister || isRegistered ? (
-        <button
-          onClick={handleRegisterOrUnregister}
-          className={`w-full px-5 py-3 ${isRegistered ? "bg-red-600 hover:bg-red-700 focus:ring-red-400" : "bg-green-700 hover:bg-green-800 focus:ring-green-600"} text-white text-lg font-bold rounded-full transition-shadow shadow-lg focus:outline-none focus:ring-2 tracking-wide cursor-pointer`}
-          disabled={registering}
-        >
-          {registering
-            ? (isRegistered ? "Unregistering..." : "Registering...")
-            : (isRegistered ? "Unregister" : "Register")}
-        </button>
+        <div className="text-center">
+          <button
+            onClick={handleRegisterOrUnregister}
+            className={`w-full py-3 px-6 font-semibold rounded-lg transition-colors ${
+              isRegistered
+                ? "bg-red-600 hover:bg-red-700 text-white"
+                : "bg-green-600 hover:bg-green-700 text-white"
+            }`}
+            disabled={registering}
+          >
+            {registering
+              ? (isRegistered ? "Leaving Challenge..." : "Joining Challenge...")
+              : (isRegistered ? "Leave Challenge" : "Join Challenge")}
+          </button>
+          <p className="text-sm text-gray-600 mt-2">
+            {isRegistered
+              ? "You are currently registered for this challenge"
+              : "Join this challenge to start earning points"
+            }
+          </p>
+        </div>
       ) : (
-        <div className="px-5 py-3 bg-yellow-50 text-yellow-900 rounded-lg font-semibold text-center shadow tracking-wide border border-yellow-300">
-          <p className="text-base font-bold mb-1">Registration Not Open</p>
-          <span>
-            This challenge is currently{" "}
-            <span className="font-semibold">
-              {challenge.status.charAt(0).toUpperCase() + challenge.status.slice(1)}
-            </span>
-            .
-          </span>
+        <div className="text-center">
+          <div className="text-yellow-600 font-semibold mb-2">Not Available</div>
+          <p className="text-gray-600 text-sm">
+            This challenge is currently {challenge.status} and not accepting new participants.
+          </p>
         </div>
       )}
     </div>
   );
 
   return (
-    <div
-      className="min-h-screen bg-gradient-to-b from-green-100 via-green-50 to-green-200 py-2 sm:py-3 max-w-full mx-auto flex flex-col relative rounded-lg px-4 sm:px-8 md:px-16 lg:px-20 xl:px-28 font-sans text-green-900 shadow-inner overflow-hidden"
-      ref={containerRef}
-      style={{ fontFamily: "'Inter', 'Segoe UI', 'Roboto', Arial, sans-serif", position: 'relative' }}
-    >
-      {/* Eco-themed subtle background */}
-      <svg
-        className="absolute top-0 left-0 w-full h-40 pointer-events-none opacity-10"
-        viewBox="0 0 1440 320"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <path fill="#10b981" fillOpacity="0.4"
-              d="M0,128L48,112C96,96,192,64,288,85.3C384,107,480,181,576,208C672,235,768,213,864,192C960,171,1056,149,1152,128C1248,107,1344,85,1392,74.7L1440,64L1440,0L1392,0C1344,0,1248,0,1152,0C1056,0,960,0,864,0C768,0,672,0,576,0C480,0,384,0,288,0C192,0,96,0,48,0L0,0Z" />
-        <circle cx="200" cy="75" r="50" fill="#65a30d" fillOpacity="0.13" />
-        <circle cx="1300" cy="55" r="30" fill="#065f46" fillOpacity="0.5" />
-      </svg>
-
-      {/* Close button */}
-      <div className="relative mb-16 z-10">
+    <div className="min-h-screen bg-gradient-to-b from-green-50 to-green-100 py-4 sm:py-6 px-4 sm:px-6 max-w-4xl mx-auto">
+      {/* Header with Close Button */}
+      <div className="flex justify-between items-start mb-6">
+        <div className="flex-1">
+          <h1 className="text-2xl sm:text-3xl font-bold text-green-900 mb-2">
+            {challenge.title}
+          </h1>
+          <div className="flex items-center gap-2 text-green-700">
+            {statusIcon}
+            <span className="font-medium capitalize">{challenge.status}</span>
+          </div>
+        </div>
         <button
           onClick={onClose}
-          aria-label="Close details"
-          className="absolute top-3 right-3 sm:top-5 sm:right-5 px-4 py-2 rounded-lg bg-green-700 text-white font-semibold hover:bg-green-800 transition-shadow shadow-lg focus:outline-none focus:ring-2 focus:ring-green-600 z-20 cursor-pointer"
+          className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 font-medium transition-colors"
         >
           Close
         </button>
       </div>
 
-      {/* Title and Status */}
-      <div className="flex flex-col items-start gap-2 mb-4 z-10">
-        <h1 className="text-xl sm:text-2xl md:text-4xl font-extrabold tracking-tight leading-tight drop-shadow-md"
-            style={{ fontFamily: "'Inter', 'Segoe UI', 'Roboto', Arial, sans-serif" }}>
-          {challenge.title}
-        </h1>
-        <div className="flex items-center gap-2 mt-2 text-lg text-green-800 font-semibold">
-          {statusIcon}
-          <span>{challenge.status.charAt(0).toUpperCase() + challenge.status.slice(1)}</span>
+      {/* Key Information Cards */}
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
+        <div className="bg-white rounded-lg p-3 text-center shadow-sm border border-green-200">
+          <div className="text-green-600 text-sm font-medium mb-1">Category</div>
+          <div className="text-green-900 font-semibold">{challenge.category}</div>
         </div>
-      </div>
-
-      {/* Category, Difficulty, Participants */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-2 gap-2 sm:gap-6 z-10">
-        <div className="flex flex-wrap gap-2 sm:gap-4 items-center">
-          <InfoTag label="Category" value={challenge.category} icon={<MdCategory className="mr-1 w-4 h-4 sm:mr-2 sm:w-6 sm:h-6" />} color="green" compact />
-          <InfoTag label="Difficulty" value={challenge.difficulty} icon={<MdStarRate className="mr-1 w-4 h-4 sm:mr-2 sm:w-6 sm:h-6" />} color="yellow" compact />
-          <ParticipantsTag value={`${challenge.totalParticipants}/${challenge.participantCap}`} compact />
+        <div className="bg-white rounded-lg p-3 text-center shadow-sm border border-green-200">
+          <div className="text-yellow-600 text-sm font-medium mb-1">Difficulty</div>
+          <div className="text-yellow-900 font-semibold">{challenge.difficulty}</div>
         </div>
-        <div
-          className="inline-flex items-center gap-1 sm:gap-2 px-3 py-1 sm:px-4 sm:py-2 rounded-full font-extrabold text-sm sm:text-lg bg-green-300 text-green-900 select-none shadow min-w-[120px] sm:min-w-[140px]"
-          title={`Green Points: +${challenge.greenPoints}`}
-        >
-          <FaLeaf className="w-4 h-4 sm:w-6 sm:h-6" />
-          <span className="hidden sm:inline">Green Points:</span>
-          <span className="sm:hidden">Points:</span>
-          <span>{challenge.greenPoints}</span>
+        <div className="bg-white rounded-lg p-3 text-center shadow-sm border border-green-200">
+          <div className="text-blue-600 text-sm font-medium mb-1">Participants</div>
+          <div className="text-blue-900 font-semibold">{challenge.totalParticipants}/{challenge.participantCap}</div>
         </div>
-      </div>
-
-      {/* Dates & Created by & Time (compact for mobile) */}
-      <div className="
-        flex flex-col gap-2 mb-3 z-10
-        text-green-800 font-medium text-sm sm:text-base
-      ">
-        <div className="flex flex-col sm:flex-row gap-2 sm:gap-4 items-start sm:items-center">
-          <div className="flex flex-col sm:flex-row gap-2 items-start sm:items-center">
-            <span className="flex items-center gap-1 rounded px-1.5 py-0.5 bg-green-50 text-xs sm:text-sm">
-              <MdEvent className="w-4 h-4 text-green-700" />
-              <b>Start:</b> {formatIST(challenge.startDate)}
-            </span>
-            <span className="flex items-center gap-1 rounded px-1.5 py-0.5 bg-green-50 text-xs sm:text-sm">
-              <MdEvent className="w-4 h-4 text-green-700" />
-              <b>End:</b> {formatIST(challenge.endDate)}
-            </span>
+        <div className="bg-white rounded-lg p-3 text-center shadow-sm border border-green-200">
+          <div className="text-green-600 text-sm font-medium mb-1">Points</div>
+          <div className="text-green-900 font-semibold flex items-center justify-center gap-1">
+            <FaLeaf className="w-4 h-4" />
+            {challenge.greenPoints}
           </div>
-          <span className="text-xs sm:text-sm whitespace-nowrap">
-            <span className="font-semibold">Created by:</span> {challenge.creatorName}
-          </span>
-        </div>
-        <div className="flex items-center gap-2 text-green-900 text-xs sm:text-sm">
-          <span className="font-semibold">Current Time (IST):</span>
-          <span className="inline-flex items-center font-mono bg-green-50 rounded px-1.5 py-0.5">
-            <MdAccessTime className="w-4 h-4 text-green-700 mr-1" />
-            {nowIST}
-          </span>
         </div>
       </div>
 
-      {/* Main Content */}
-      {sideBySideLayout ? (
-        <div className="flex gap-14 mx-auto w-full z-10">
-          <ImageCarousel
-            images={challenge.images}
-            currentImageIdx={currentImageIdx}
-            setCurrentImageIdx={setCurrentImageIdx}
-            imageLoading={imageLoading}
-            setImageLoading={setImageLoading}
-            onTouchStart={onTouchStart}
-            onTouchMove={onTouchMove}
-            onTouchEnd={onTouchEnd}
-            previewsRef={previewsRef}
-            scrollPreviews={scrollPreviews}
-          />
-          {/* Details block */}
-          <section
-            className="bg-white rounded-xl p-7 shadow-lg flex-none w-[40vw] flex flex-col text-green-900 leading-relaxed text-lg whitespace-pre-line"
-            style={{ fontFamily: "'Inter', 'Segoe UI', 'Roboto', Arial, sans-serif" }}
-          >
-            <h2 className="text-3xl font-bold mb-4 border-b border-green-300 pb-3" style={{ fontFamily: "inherit" }}>
-              Challenge Details
-            </h2>
-            <p className="flex-grow">{challenge.details}</p>
-          </section>
+      {/* Challenge Timeline */}
+      <div className="bg-white rounded-lg p-4 mb-6 shadow-sm border border-green-200">
+        <h3 className="font-semibold text-green-900 mb-3">Challenge Timeline</h3>
+        <div className="space-y-2 text-sm">
+          <div className="flex justify-between items-center">
+            <span className="text-green-700 font-medium">Starts:</span>
+            <span className="text-green-900">{formatIST(challenge.startDate)}</span>
+          </div>
+          <div className="flex justify-between items-center">
+            <span className="text-green-700 font-medium">Ends:</span>
+            <span className="text-green-900">{formatIST(challenge.endDate)}</span>
+          </div>
+          <div className="flex justify-between items-center pt-2 border-t border-green-100">
+            <span className="text-green-700 font-medium">Current Time:</span>
+            <span className="text-green-900 font-mono text-xs">{nowIST}</span>
+          </div>
         </div>
-      ) : (
-        <>
-          <ImageCarouselSingle
-            images={challenge.images}
-            currentImageIdx={currentImageIdx}
-            setCurrentImageIdx={setCurrentImageIdx}
-            imageLoading={imageLoading}
-            setImageLoading={setImageLoading}
-            onTouchStart={onTouchStart}
-            onTouchMove={onTouchMove}
-            onTouchEnd={onTouchEnd}
-          />
-          <section
-            className="bg-white rounded-xl p-7 shadow-lg max-w-5xl w-full mx-auto mb-12 text-green-900 leading-relaxed text-lg whitespace-pre-line"
-            style={{ fontFamily: "'Inter', 'Segoe UI', 'Roboto', Arial, sans-serif" }}
-          >
-            <h2 className="text-3xl font-bold mb-4 border-b border-green-300 pb-3" style={{ fontFamily: "inherit" }}>
-              Challenge Details
-            </h2>
-            <p>{challenge.details}</p>
-          </section>
-        </>
+        <div className="mt-3 text-xs text-green-600">
+          Created by: <span className="font-medium">{challenge.creatorName}</span>
+        </div>
+      </div>
+
+      {/* Challenge Images */}
+      {challenge.images.length > 0 && (
+        <div className="mb-6">
+          <div className="bg-white rounded-lg p-4 shadow-sm border border-green-200">
+            <h3 className="font-semibold text-green-900 mb-3">Challenge Images</h3>
+            <div className="relative">
+              <div className="aspect-video bg-green-50 rounded-lg overflow-hidden mb-3">
+                {imageLoading && (
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-green-600"></div>
+                  </div>
+                )}
+                <img
+                  src={challenge.images[currentImageIdx]?.image_url}
+                  alt={`Challenge image ${currentImageIdx + 1}`}
+                  className={`w-full h-full object-cover transition-opacity duration-300 ${imageLoading ? 'opacity-0' : 'opacity-100'}`}
+                  onLoad={() => setImageLoading(false)}
+                  onError={() => setImageLoading(false)}
+                />
+              </div>
+
+              {challenge.images.length > 1 && (
+                <div className="flex justify-center gap-2">
+                  {challenge.images.map((_, idx) => (
+                    <button
+                      key={idx}
+                      onClick={() => {
+                        setImageLoading(true);
+                        setCurrentImageIdx(idx);
+                      }}
+                      className={`w-3 h-3 rounded-full transition-colors ${
+                        idx === currentImageIdx ? 'bg-green-600' : 'bg-green-300'
+                      }`}
+                    />
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
       )}
-      {renderRegisterBlock}
+
+      {/* Challenge Description */}
+      <div className="bg-white rounded-lg p-4 shadow-sm border border-green-200 mb-6">
+        <h3 className="font-semibold text-green-900 mb-3">About This Challenge</h3>
+        <p className="text-green-800 leading-relaxed whitespace-pre-line">
+          {challenge.details}
+        </p>
+      </div>
+
+      {/* Registration Section */}
+      <div>
+        <h3 className="font-semibold text-green-900 mb-3 text-lg">Get Started</h3>
+        {renderRegisterBlock}
+      </div>
     </div>
   );
 }

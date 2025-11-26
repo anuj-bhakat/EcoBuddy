@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import { FaEye, FaEyeSlash } from "react-icons/fa";
+import { FaEye, FaEyeSlash, FaLeaf } from "react-icons/fa";
 import Navbar from "./Navbar";
 
 export function UserLogin() {
@@ -73,152 +73,134 @@ export function UserLogin() {
     navigate("/forgot-password");
   };
 
-  // -- ADD KEYFRAMES STYLE FOR ANIMATION --
-  const emojiAnimationKeyframes = `
-    @keyframes floatFade {
-      0% { transform: translateY(0) scale(1); opacity: 0.7; }
-      50% { transform: translateY(-15px) scale(1.1); opacity: 1; }
-      100% { transform: translateY(0) scale(1); opacity: 0.7; }
-    }
-    @keyframes fadeInUp {
-      0% { opacity: 0; transform: translateY(20px); }
-      100% { opacity: 1; transform: translateY(0); }
-    }
-  `;
-
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 via-white to-green-100 flex flex-col relative overflow-hidden">
+    <div className="min-h-screen bg-white flex flex-col">
       <Navbar />
-      {/* Inline styles for emoji animation */}
-      <style>{emojiAnimationKeyframes}</style>
-      {/* Floating Emojis in the background */}
-      <div
-        className="absolute top-10 left-8 text-green-300 text-5xl pointer-events-none select-none z-0"
-        style={{ animation: "floatFade 6s ease-in-out infinite" }}
-      >
-        🌿
-      </div>
-      <div
-        className="absolute top-24 right-10 text-green-300 text-4xl pointer-events-none select-none z-0"
-        style={{ animation: "floatFade 6s ease-in-out infinite 1.2s" }}
-      >
-        🍃
-      </div>
-      <div
-        className="absolute bottom-24 left-6 text-green-200 text-6xl pointer-events-none select-none z-0"
-        style={{ animation: "floatFade 6s ease-in-out infinite 2.4s" }}
-      >
-        🌳
-      </div>
-      <div
-        className="absolute bottom-10 right-10 text-yellow-200 text-5xl pointer-events-none select-none z-0"
-        style={{ animation: "floatFade 6s ease-in-out infinite 3.6s" }}
-      >
-        ☀️
-      </div>
 
-      {/* Login Card */}
-      <div className="flex-grow flex items-center justify-center px-4 py-10 relative z-10">
-        <div
-          className="w-full max-w-md bg-white rounded-2xl shadow-xl border border-gray-100 px-6 sm:px-8 py-8 md:py-10 lg:px-10 transition-all duration-300"
-          style={{ animation: "fadeInUp 0.6s ease-out" }}
-        >
-          <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-center text-green-800 mb-4">
-            Welcome Back 🌱
-          </h2>
-          <p className="text-center text-gray-600 text-sm mb-6 sm:mb-8">
-            Log in to continue your climate journey.
-          </p>
-
-          {message && (
-            <div
-              className={`mb-6 p-3 rounded text-center font-medium text-sm ${
-                message.type === "error"
-                  ? "bg-red-100 text-red-700"
-                  : "bg-green-100 text-green-700"
-              }`}
-              role="alert"
-            >
-              {message.text}
+      {/* Main Content */}
+      <div className="flex-1 flex items-center justify-center px-4 sm:px-6 lg:px-8 py-8">
+        <div className="w-full max-w-md">
+          {/* Header */}
+          <div className="text-center mb-8">
+            <div className="inline-flex items-center justify-center w-16 h-16 bg-green-100 rounded-full mb-4">
+              <FaLeaf className="w-8 h-8 text-green-600" />
             </div>
-          )}
+            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">
+              Welcome Back
+            </h1>
+            <p className="text-gray-600 text-base sm:text-lg">
+              Sign in to continue your eco-journey
+            </p>
+          </div>
 
-          <form onSubmit={handleSubmit} noValidate>
-            <div className="mb-4 sm:mb-5">
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
-                Email Address
-              </label>
-              <input
-                type="email"
-                id="email"
-                value={email}
-                onChange={handleEmailChange}
-                autoComplete="email"
-                placeholder="Email address"
-                required
-                className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-green-600 focus:ring-2 focus:ring-green-100 focus:outline-none bg-gray-50 placeholder-gray-400 text-sm transition-colors"
-                aria-describedby="email-error"
-              />
-            </div>
+          {/* Login Form */}
+          <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-6 sm:p-8">
+            {message && (
+              <div
+                className={`mb-6 p-4 rounded-xl text-center font-medium ${
+                  message.type === "error"
+                    ? "bg-red-50 text-red-700 border border-red-200"
+                    : "bg-green-50 text-green-700 border border-green-200"
+                }`}
+                role="alert"
+              >
+                {message.text}
+              </div>
+            )}
 
-            <div className="mb-4">
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
-                Password
-              </label>
-              <div className="relative">
+            <form onSubmit={handleSubmit} noValidate className="space-y-6">
+              {/* Email Field */}
+              <div>
+                <label htmlFor="email" className="block text-sm font-semibold text-gray-900 mb-2">
+                  Email Address
+                </label>
                 <input
-                  type={showPassword ? "text" : "password"}
-                  id="password"
-                  value={password}
-                  onChange={handlePasswordChange}
-                  autoComplete="current-password"
-                  placeholder="Password"
+                  type="email"
+                  id="email"
+                  value={email}
+                  onChange={handleEmailChange}
+                  autoComplete="email"
+                  placeholder="Enter your email"
                   required
-                  className="w-full px-4 py-3 pr-12 rounded-lg border border-gray-300 focus:border-green-600 focus:ring-2 focus:ring-green-100 focus:outline-none bg-gray-50 placeholder-gray-400 text-sm transition-colors"
-                  aria-describedby="password-error"
+                  className="w-full px-4 py-4 rounded-xl border border-gray-300 focus:border-green-500 focus:ring-2 focus:ring-green-200 focus:outline-none bg-white placeholder-gray-400 text-base transition-colors"
+                  aria-describedby="email-error"
                 />
+              </div>
+
+              {/* Password Field */}
+              <div>
+                <label htmlFor="password" className="block text-sm font-semibold text-gray-900 mb-2">
+                  Password
+                </label>
+                <div className="relative">
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    id="password"
+                    value={password}
+                    onChange={handlePasswordChange}
+                    autoComplete="current-password"
+                    placeholder="Enter your password"
+                    required
+                    className="w-full px-4 py-4 pr-12 rounded-xl border border-gray-300 focus:border-green-500 focus:ring-2 focus:ring-green-200 focus:outline-none bg-white placeholder-gray-400 text-base transition-colors"
+                    aria-describedby="password-error"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700 p-1"
+                    aria-label={showPassword ? "Hide password" : "Show password"}
+                  >
+                    {showPassword ? <FaEyeSlash size={20} /> : <FaEye size={20} />}
+                  </button>
+                </div>
+              </div>
+
+              {/* Forgot Password */}
+              <div className="text-right">
                 <button
                   type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700 focus:outline-none focus:text-gray-700"
-                  aria-label={showPassword ? "Hide password" : "Show password"}
+                  onClick={handleForgotPasswordNavigation}
+                  className="text-green-600 hover:text-green-700 text-sm font-medium transition-colors"
                 >
-                  {showPassword ? <FaEyeSlash size={18} /> : <FaEye size={18} />}
+                  Forgot password?
                 </button>
               </div>
-            </div>
 
-            <div className="text-right mb-4 sm:mb-6">
+              {/* Login Button */}
               <button
-                type="button"
-                onClick={handleForgotPasswordNavigation}
-                className="text-sm text-green-700 hover:underline font-medium focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 rounded"
+                type="submit"
+                disabled={loading}
+                className={`w-full py-4 px-6 rounded-xl font-semibold text-base transition-all duration-200 ${
+                  loading
+                    ? "bg-gray-400 text-white cursor-not-allowed"
+                    : "bg-green-600 hover:bg-green-700 text-white shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+                }`}
               >
-                Forgot password?
+                {loading ? "Signing In..." : "Sign In"}
               </button>
+            </form>
+
+            {/* Sign Up Link */}
+            <div className="mt-8 text-center">
+              <p className="text-gray-600">
+                Don't have an account?{" "}
+                <button
+                  type="button"
+                  onClick={handleSignupNavigation}
+                  className="text-green-600 hover:text-green-700 font-semibold transition-colors"
+                >
+                  Create Account
+                </button>
+              </p>
             </div>
+          </div>
 
-            <button
-              type="submit"
-              disabled={loading}
-              className={`w-full bg-green-600 text-white font-semibold py-3 rounded-lg shadow hover:bg-green-700 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 ${
-                loading ? "opacity-80 cursor-not-allowed" : "hover:scale-105 active:scale-95"
-              }`}
-            >
-              {loading ? "Logging in..." : "Login"}
-            </button>
-          </form>
-
-          <p className="mt-4 sm:mt-6 text-center text-sm text-gray-600">
-            Don't have an account?{" "}
-            <button
-              type="button"
-              onClick={handleSignupNavigation}
-              className="text-green-700 hover:underline font-medium focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 rounded"
-            >
-              Sign up
-            </button>
-          </p>
+          {/* Additional Info */}
+          <div className="mt-8 text-center">
+            <p className="text-gray-500 text-sm">
+              By signing in, you're taking a step towards a greener future
+            </p>
+          </div>
         </div>
       </div>
     </div>

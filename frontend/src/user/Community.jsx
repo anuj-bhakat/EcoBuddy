@@ -205,15 +205,13 @@ export default function Community() {
     <>
       <Navbar />
 
-      {/* Enhanced background with eco-themed decorations */}
-      <div className="min-h-screen bg-gradient-to-br from-green-50 via-green-25 to-green-100 relative overflow-hidden">
+      <div className="min-h-screen bg-gradient-to-b from-green-50 to-green-100">
+        <div className="max-w-4xl mx-auto px-4 py-6">
 
-        <div className="relative z-10 py-2 sm:py-4 md:py-6">
-
-          {/* Enhanced Navigation */}
-          <div className="max-w-6xl mx-auto px-2 sm:px-4 mb-2 sm:mb-4">
+          {/* Simple Navigation */}
+          <div className="mb-6">
             <div className="flex justify-center">
-              <div className="bg-white rounded-xl shadow-lg border border-green-200 p-1 flex flex-row flex-wrap sm:flex-nowrap w-full sm:w-auto max-w-md sm:max-w-none">
+              <div className="bg-white rounded-lg shadow-sm border border-green-200 p-1 flex w-full max-w-md">
                 {[
                   { key: 'Feed', label: 'Community Feed', icon: <MdRssFeed className="w-4 h-4" /> },
                   { key: 'My Post', label: 'My Posts', icon: <MdAccountCircle className="w-4 h-4" /> },
@@ -222,10 +220,10 @@ export default function Community() {
                   <button
                     key={key}
                     onClick={() => handleSectionChange(key)}
-                    className={`flex items-center justify-center gap-1 px-2 sm:px-3 py-2 sm:py-2 rounded-lg font-semibold text-xs sm:text-sm transition-all duration-200 min-h-[44px] flex-1 sm:flex-none ${
+                    className={`flex items-center justify-center gap-2 px-4 py-3 rounded-md font-medium text-sm transition-colors flex-1 ${
                       activeSection === key
-                        ? 'bg-green-600 text-white shadow-md transform scale-105'
-                        : 'text-green-600 hover:bg-green-50 hover:text-green-700'
+                        ? 'bg-green-600 text-white shadow-sm'
+                        : 'text-green-700 hover:bg-green-50'
                     }`}
                   >
                     {icon}
@@ -238,83 +236,89 @@ export default function Community() {
           </div>
 
           {/* Content Sections */}
-          <div className="max-w-4xl mx-auto px-2 sm:px-4">
+          <div>
             {/* Feed Section */}
             {activeSection === 'Feed' && (
-              <div className="space-y-3">
+              <div className="space-y-4">
+                <h2 className="text-xl font-bold text-green-900 mb-4">Community Feed</h2>
+
                 {postsData.map((post) => (
                   <article
                     key={post.id}
-                    className="bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 border border-green-200 hover:border-green-300 overflow-hidden group"
+                    className="bg-white rounded-lg shadow-sm border border-green-200 overflow-hidden"
                   >
                     {/* Post Header */}
-                    <div className="p-4 sm:p-5 pb-3 sm:pb-4">
-                      <div className="flex items-start justify-between mb-3">
-                        <div className="flex items-center space-x-3">
-                          <div className="w-10 h-10 sm:w-10 sm:h-10 bg-green-100 rounded-full flex items-center justify-center text-lg border-2 border-green-200">
-                            <MdPerson className="w-5 h-5 text-green-700" />
-                          </div>
-                          <div className="min-w-0 flex-1">
-                            <h3 className="font-semibold text-green-900 text-sm sm:text-sm truncate">{post.userName}</h3>
-                            <p className="text-green-600 text-xs flex items-center gap-1 mt-0.5">
-                              <MdAccessTime className="w-3 h-3 flex-shrink-0" />
-                              <span className="truncate">{post.timeAgo}</span>
-                            </p>
-                          </div>
+                    <div className="p-4">
+                      {/* User Info Row */}
+                      <div className="flex items-center gap-3 mb-3">
+                        <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0">
+                          <MdPerson className="w-5 h-5 text-green-700" />
                         </div>
-                        <div className="flex items-center gap-2 flex-shrink-0 ml-2">
-                          <span className="inline-flex items-center gap-1 px-2 py-1 bg-teal-50 text-teal-700 text-xs font-medium rounded-full border border-teal-100">
-                            <FaLeaf className="w-3 h-3" />
-                            <span className="truncate">{post.challengeCategory}</span>
-                          </span>
-                          <span className={`px-2 py-1 text-xs font-medium rounded-full border ${getDifficultyColor(post.difficulty)}`}>
-                            {post.difficulty}
-                          </span>
-                          <span className="inline-flex items-center px-3 py-1.5 bg-green-600 text-white text-xs font-bold rounded-full shadow-sm">
-                            +{post.greenPoints}
-                          </span>
+                        <div className="min-w-0 flex-1">
+                          <h3 className="font-semibold text-green-900 truncate">{post.userName}</h3>
+                          <p className="text-green-600 text-sm flex items-center gap-1">
+                            <MdAccessTime className="w-3 h-3 flex-shrink-0" />
+                            <span className="truncate">{post.timeAgo}</span>
+                          </p>
                         </div>
                       </div>
 
+                      {/* Challenge Badges Row */}
+                      <div className="flex flex-wrap items-center gap-2 mb-3">
+                        <span className="px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full font-medium">
+                          {post.challengeCategory}
+                        </span>
+                        <span className={`px-2 py-1 text-xs rounded-full font-medium ${getDifficultyColor(post.difficulty)}`}>
+                          {post.difficulty}
+                        </span>
+                        <span className="px-2 py-1 bg-green-600 text-white text-xs rounded-full font-semibold ml-auto">
+                          +{post.greenPoints} pts
+                        </span>
+                      </div>
+
                       {/* Challenge Title */}
-                      <h2 className="text-base sm:text-lg font-bold text-green-900 mb-2 sm:mb-3 group-hover:text-green-700 transition-colors leading-tight">
+                      <h2 className="text-lg font-bold text-green-900 mb-2">
                         {post.challenge}
                       </h2>
 
                       {/* Post Description */}
-                      <p className="text-gray-700 text-sm sm:text-sm leading-relaxed mb-3 line-clamp-3">
+                      <p className="text-gray-700 leading-relaxed mb-3">
                         {post.description}
                       </p>
+
+                      {/* Status */}
+                      <div className="flex items-center gap-2">
+                        {getStatusIcon(post.status)}
+                        <span className="text-sm text-green-700 capitalize">{post.status}</span>
+                      </div>
                     </div>
 
                     {/* Post Actions */}
-                    <div className="px-4 sm:px-5 py-4 bg-white border-t border-green-200">
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center flex-wrap gap-3 sm:gap-4">
-                          <button
-                            onClick={() => handleLike(post.id)}
-                            className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition-all duration-200 min-h-[48px] focus:outline-none focus:ring-2 focus:ring-green-500 ${
-                              likedPosts.has(post.id)
-                                ? 'bg-green-100 text-green-800 shadow-sm border border-green-200'
-                                : 'hover:bg-green-50 text-green-700 border border-green-100'
-                            }`}
-                          >
-                            <MdThumbUp className={`w-5 h-5 ${likedPosts.has(post.id) ? 'fill-current' : ''}`} />
-                            <span className="text-sm font-medium">{post.upvotes + (likedPosts.has(post.id) ? 1 : 0)}</span>
-                          </button>
+                    <div className="px-4 py-3 bg-gray-50 border-t border-green-100">
+                      <div className="flex items-center gap-4">
+                        <button
+                          onClick={() => handleLike(post.id)}
+                          className={`flex items-center gap-2 px-3 py-2 rounded-lg transition-colors ${
+                            likedPosts.has(post.id)
+                              ? 'bg-green-100 text-green-800'
+                              : 'hover:bg-green-50 text-green-700'
+                          }`}
+                        >
+                          <MdThumbUp className={`w-5 h-5 ${likedPosts.has(post.id) ? 'fill-current' : ''}`} />
+                          <span>{post.upvotes + (likedPosts.has(post.id) ? 1 : 0)}</span>
+                        </button>
 
-                          <button
-                            onClick={() => handleDislike(post.id)}
-                            className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition-all duration-200 min-h-[48px] focus:outline-none focus:ring-2 focus:ring-red-500 ${
-                              dislikedPosts.has(post.id)
-                                ? 'bg-red-100 text-red-800 shadow-sm border border-red-200'
-                                : 'hover:bg-red-50 text-red-700 border border-red-100'
-                            }`}
-                          >
-                            <MdThumbDown className={`w-5 h-5 ${dislikedPosts.has(post.id) ? 'fill-current' : ''}`} />
-                            <span className="text-sm font-medium">{post.downvotes + (dislikedPosts.has(post.id) ? 1 : 0)}</span>
-                          </button>
-                        </div>
+                        <button
+                          onClick={() => handleDislike(post.id)}
+                          className={`flex items-center gap-2 px-3 py-2 rounded-lg transition-colors ${
+                            dislikedPosts.has(post.id)
+                              ? 'bg-red-100 text-red-800'
+                              : 'hover:bg-red-50 text-red-700'
+                          }`}
+                        >
+                          <MdThumbDown className={`w-5 h-5 ${dislikedPosts.has(post.id) ? 'fill-current' : ''}`} />
+                          <span>{post.downvotes + (dislikedPosts.has(post.id) ? 1 : 0)}</span>
+                        </button>
                       </div>
                     </div>
                   </article>
@@ -324,16 +328,17 @@ export default function Community() {
 
             {/* My Posts Section */}
             {activeSection === 'My Post' && (
-              <div className="space-y-2 sm:space-y-3">
+              <div className="space-y-4">
+                <h2 className="text-xl font-bold text-green-900 mb-4">My Posts</h2>
 
                 {myPostsData.length === 0 ? (
-                  <div className="bg-white rounded-lg sm:rounded-xl shadow-md p-4 sm:p-6 text-center">
-                    <div className="text-2xl sm:text-4xl mb-3">🌱</div>
-                    <h3 className="text-base sm:text-lg font-semibold text-green-800 mb-2">No posts yet</h3>
-                    <p className="text-gray-600 mb-3 text-xs sm:text-sm">Start sharing your eco-journey with the community!</p>
+                  <div className="bg-white rounded-lg shadow-sm border border-green-200 p-8 text-center">
+                    <div className="text-4xl mb-4">🌱</div>
+                    <h3 className="text-lg font-semibold text-green-800 mb-2">No posts yet</h3>
+                    <p className="text-gray-600 mb-4">Start sharing your eco-journey with the community!</p>
                     <button
                       onClick={() => handleSectionChange('New Post')}
-                      className="px-3 sm:px-4 py-2 bg-green-500 text-white font-semibold rounded-lg hover:bg-green-600 transition-colors text-xs sm:text-sm"
+                      className="px-6 py-3 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 transition-colors"
                     >
                       Create Your First Post
                     </button>
@@ -342,49 +347,55 @@ export default function Community() {
                   myPostsData.map((post) => (
                     <article
                       key={post.id}
-                      className="bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 border border-green-200 hover:border-green-300 overflow-hidden group"
+                      className="bg-white rounded-lg shadow-sm border border-green-200 overflow-hidden"
                     >
-                      <div className="p-3 sm:p-4">
-                        <div className="flex items-start justify-between mb-2">
-                          <div className="flex items-center space-x-2">
-                            <div className="w-7 h-7 sm:w-8 sm:h-8 bg-green-50 rounded-full flex items-center justify-center text-base sm:text-lg border border-green-100">
-                              <MdPerson className="w-4 h-4 text-green-600" />
-                            </div>
-                            <div className="min-w-0 flex-1">
-                              <h3 className="font-bold text-green-800 text-xs sm:text-sm truncate">{post.userName}</h3>
-                              <p className="text-green-500 text-xs flex items-center gap-1">
-                                <MdAccessTime className="w-2.5 h-2.5 sm:w-3 sm:h-3 flex-shrink-0" />
-                                <span className="truncate">{post.timeAgo}</span>
-                              </p>
-                            </div>
+                      <div className="p-4">
+                        {/* User Info Row */}
+                        <div className="flex items-center gap-3 mb-3">
+                          <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0">
+                            <MdPerson className="w-4 h-4 text-green-600" />
                           </div>
-                          <div className="flex items-center gap-1 flex-shrink-0">
-                            <span className="inline-flex items-center gap-1 px-1.5 py-0.5 bg-teal-50 text-teal-700 text-xs font-medium rounded-full">
-                              <FaLeaf className="w-2 h-2" />
-                              <span className="truncate">{post.challengeCategory}</span>
-                            </span>
-                            <span className={`px-1.5 py-0.5 text-xs font-medium rounded-full ${getDifficultyColor(post.difficulty)}`}>
-                              {post.difficulty}
-                            </span>
-                            <span className="inline-flex items-center px-2 py-1 bg-green-500 text-white text-xs font-semibold rounded-full shadow-sm">
-                              +{post.greenPoints}
-                            </span>
+                          <div className="min-w-0 flex-1">
+                            <h3 className="font-semibold text-green-900 truncate">{post.userName}</h3>
+                            <p className="text-green-600 text-sm flex items-center gap-1">
+                              <MdAccessTime className="w-3 h-3 flex-shrink-0" />
+                              <span className="truncate">{post.timeAgo}</span>
+                            </p>
                           </div>
                         </div>
 
+                        {/* Challenge Badges Row */}
+                        <div className="flex flex-wrap items-center gap-2 mb-3">
+                          <span className="px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full font-medium">
+                            {post.challengeCategory}
+                          </span>
+                          <span className={`px-2 py-1 text-xs rounded-full font-medium ${getDifficultyColor(post.difficulty)}`}>
+                            {post.difficulty}
+                          </span>
+                          <span className="px-2 py-1 bg-green-600 text-white text-xs rounded-full font-semibold ml-auto">
+                            +{post.greenPoints} pts
+                          </span>
+                        </div>
 
-                        <h2 className="text-sm sm:text-base font-bold text-green-800 mb-1 sm:mb-2 leading-tight">{post.challenge}</h2>
-                        <p className="text-gray-700 text-xs sm:text-sm leading-relaxed mb-2 line-clamp-3">{post.description}</p>
+                        {/* Challenge Title */}
+                        <h2 className="text-lg font-bold text-green-900 mb-2">{post.challenge}</h2>
+
+                        {/* Post Description */}
+                        <p className="text-gray-700 leading-relaxed mb-3">{post.description}</p>
+
+                        {/* Status */}
+                        <div className="flex items-center gap-2">
+                          {getStatusIcon(post.status)}
+                          <span className="text-sm text-green-700 capitalize">{post.status}</span>
+                        </div>
                       </div>
 
-                      <div className="px-4 sm:px-5 py-4 bg-white border-t border-green-200">
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center flex-wrap gap-2 sm:gap-4">
-                              <button className="flex items-center space-x-2 px-4 py-2 rounded-lg transition-all duration-200 min-h-[48px] focus:outline-none focus:ring-2 focus:ring-green-500 hover:bg-green-50 text-green-700 border border-green-100">
-                                <MdThumbUp className="w-5 h-5" />
-                                <span className="text-sm font-medium">{post.upvotes}</span>
-                              </button>
-                            </div>
+                      <div className="px-4 py-3 bg-gray-50 border-t border-green-100">
+                        <div className="flex items-center gap-4">
+                          <button className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-green-50 text-green-700">
+                            <MdThumbUp className="w-5 h-5" />
+                            <span>{post.upvotes}</span>
+                          </button>
                         </div>
                       </div>
                     </article>
@@ -395,24 +406,24 @@ export default function Community() {
 
             {/* New Post Section */}
             {activeSection === 'New Post' && (
-              <div className="space-y-3 sm:space-y-4">
+              <div className="space-y-4">
+                <h2 className="text-xl font-bold text-green-900 mb-4">Create New Post</h2>
 
-                <div className="bg-white rounded-xl shadow-lg hover:shadow-xl p-6 sm:p-8 border border-green-200 transition-all duration-300">
+                <div className="bg-white rounded-lg shadow-sm border border-green-200 p-6">
                   <div className="mb-6">
-                    <h3 className="font-bold text-green-800 text-sm">Share your story</h3>
-                    <p className="text-green-600 text-xs">Tell the community about your eco-journey</p>
+                    <h3 className="text-lg font-semibold text-green-900 mb-2">Share Your Eco-Journey</h3>
+                    <p className="text-green-700">Tell the community about your environmental actions and inspire others!</p>
                   </div>
 
                   <div className="space-y-6">
                     <div>
-                      <label className="flex items-center gap-2 text-green-800 font-semibold mb-3 text-sm">
-                        <MdRssFeed className="w-4 h-4" />
-                        Select a Challenge
+                      <label className="block font-medium text-green-900 mb-2">
+                        Which challenge are you sharing about?
                       </label>
                       <select
                         value={selectedChallenge}
                         onChange={(e) => setSelectedChallenge(e.target.value)}
-                        className="w-full p-4 rounded-xl border border-green-200 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 bg-white text-gray-700 text-sm min-h-[52px] shadow-sm"
+                        className="w-full border border-green-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-green-500 bg-white text-green-900"
                       >
                         <option value="">Choose a challenge...</option>
                         {challengesList.map((challenge, idx) => (
@@ -424,58 +435,41 @@ export default function Community() {
                     </div>
 
                     <div>
-                      <label className="flex items-center gap-2 text-green-800 font-semibold mb-3 text-sm">
-                        <MdCreate className="w-4 h-4" />
-                        Share Your Experience
+                      <label className="block font-medium text-green-900 mb-2">
+                        Share your experience
                       </label>
                       <textarea
                         value={newPost}
                         onChange={(e) => setNewPost(e.target.value)}
                         rows="6"
-                        placeholder="Tell us about your eco-friendly journey! Share what you've done, how it felt, and inspire others to join the movement. 🌱✨"
-                        className="w-full p-4 rounded-xl border border-green-200 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 placeholder-green-300 text-gray-700 text-sm leading-relaxed resize-none shadow-sm"
+                        placeholder="Tell us what you did, how it felt, and what impact it had..."
+                        className="w-full border border-green-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-green-500 text-green-900 resize-none"
                       />
-                      <p className="text-xs text-green-500 mt-2 flex items-center gap-1">
-                        <span>💡</span> Tip: Be specific about your actions and their impact to inspire others!
+                      <p className="text-sm text-green-600 mt-2">
+                        💡 Tip: Be specific about your actions to inspire others!
                       </p>
                     </div>
 
-                    <div className="bg-white rounded-xl p-4 border border-green-100 shadow-sm">
-                      <h4 className="font-semibold text-green-800 mb-3 text-sm flex items-center gap-2">
+                    <div className="bg-green-50 rounded-lg p-4 border border-green-200">
+                      <h4 className="font-semibold text-green-900 mb-3 flex items-center gap-2">
                         <FaLeaf className="w-4 h-4" />
                         Community Guidelines
                       </h4>
-                      <ul className="text-sm text-green-600 space-y-2">
-                        <li className="flex items-start gap-2">
-                          <span className="text-green-500 mt-1">•</span>
-                          Select a challenge you're participating in
-                        </li>
-                        <li className="flex items-start gap-2">
-                          <span className="text-green-500 mt-1">•</span>
-                          Share authentic eco-friendly experiences
-                        </li>
-                        <li className="flex items-start gap-2">
-                          <span className="text-green-500 mt-1">•</span>
-                          Be encouraging and supportive to other members
-                        </li>
-                        <li className="flex items-start gap-2">
-                          <span className="text-green-500 mt-1">•</span>
-                          Focus on positive environmental impact
-                        </li>
-                        <li className="flex items-start gap-2">
-                          <span className="text-green-500 mt-1">•</span>
-                          Use emojis to make your post more engaging!
-                        </li>
+                      <ul className="text-sm text-green-700 space-y-1">
+                        <li>• Share authentic eco-friendly experiences</li>
+                        <li>• Be encouraging and supportive</li>
+                        <li>• Focus on positive environmental impact</li>
+                        <li>• Use emojis to make your post engaging!</li>
                       </ul>
                     </div>
 
-                    <div className="flex justify-end pt-2">
+                    <div className="flex justify-end">
                       <button
                         onClick={handlePostSubmit}
                         disabled={!selectedChallenge || !newPost.trim()}
-                        className={`px-8 py-3 rounded-xl font-bold text-sm transition-all duration-200 flex items-center gap-2 min-h-[52px] shadow-lg ${
+                        className={`px-6 py-3 rounded-lg font-semibold transition-colors flex items-center gap-2 ${
                           selectedChallenge && newPost.trim()
-                            ? 'bg-green-600 text-white hover:bg-green-700 hover:shadow-xl transform hover:scale-105'
+                            ? 'bg-green-600 text-white hover:bg-green-700'
                             : 'bg-gray-300 text-gray-500 cursor-not-allowed'
                         }`}
                       >

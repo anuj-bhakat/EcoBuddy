@@ -137,69 +137,90 @@ function SubmissionEditForm({
   );
 }
 
-// --- User List Section (responsive, paginated) ---
+// --- User List Section (simplified) ---
 function UserList({ users, type, userId, page, setPage }) {
   const paged = paginate(users, page);
   return (
-    <div className="mt-3 space-y-3 w-full">
+    <div className="space-y-4">
+      <h3 className="font-semibold text-green-900 text-lg capitalize">
+        {type === "registered" ? "Registered Users" : "Participants"}
+      </h3>
+
       {users.length === 0 ? (
-        <div className="italic text-green-700 px-2 py-3 text-center">
-          No {type === "registered" ? "registered users" : "participants"} found.
+        <div className="text-center py-8 text-green-600">
+          <p className="font-medium">No {type === "registered" ? "registered users" : "participants"} yet.</p>
+          <p className="text-sm text-green-500 mt-1">
+            {type === "registered" ? "Users will appear here when they register for this challenge." : "Participants will appear here after they submit their entries."}
+          </p>
         </div>
       ) : (
         <>
-          <ul className="list-none space-y-2 w-full">
+          <div className="space-y-3">
             {paged.map(user => {
               const isCurrent = user.user_id === userId;
-              const name = user.users?.full_name || "Unknown";
+              const name = user.users?.full_name || "Unknown User";
               const email = user.users?.email;
+
               return (
-                <li
+                <div
                   key={user.user_id}
-                  className={
-                    "bg-green-50/60 rounded-lg py-2 px-3 shadow border border-green-100 w-full" +
-                    " flex items-center justify-between gap-x-4 gap-y-2 flex-wrap sm:flex-nowrap" +
-                    (isCurrent ? " font-bold text-green-700 ring-1 ring-green-400" : "")
-                  }
+                  className={`bg-white rounded-lg p-4 border shadow-sm ${
+                    isCurrent
+                      ? "border-green-400 bg-green-50 ring-2 ring-green-200"
+                      : "border-green-200"
+                  }`}
                 >
-                  <div className="flex items-center min-w-0 flex-1 gap-x-2 flex-wrap">
-                    <MdPerson className="w-5 h-5 text-green-800 flex-shrink-0" />
-                    <span className="truncate max-w-[120px] sm:max-w-[12vw]">{name}</span>
-                    {email && (
-                      <span className="hidden sm:inline text-xs text-green-700 font-normal truncate max-w-[160px] sm:max-w-[18vw]">
-                        ({email})
-                      </span>
-                    )}
-                    <span className="block sm:hidden w-full text-xs text-green-700 font-normal truncate">{email && `(${email})`}</span>
-                    {isCurrent && (
-                      <span className="ml-2 px-2 py-0.5 rounded-full bg-green-200 text-xs font-semibold border border-green-400">
-                        You
-                      </span>
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
+                        <MdPerson className="w-4 h-4 text-green-600" />
+                      </div>
+                      <div>
+                        <div className="font-medium text-green-900 flex items-center gap-2">
+                          {name}
+                          {isCurrent && (
+                            <span className="px-2 py-1 bg-green-600 text-white text-xs rounded-full font-medium">
+                              You
+                            </span>
+                          )}
+                        </div>
+                        {email && (
+                          <div className="text-sm text-green-600">{email}</div>
+                        )}
+                      </div>
+                    </div>
+
+                    {type === "participated" && (
+                      <div className="flex items-center gap-2">
+                        <MdCheckCircle className="w-5 h-5 text-blue-600" />
+                        <span className="text-sm text-blue-600 font-medium">Completed</span>
+                      </div>
                     )}
                   </div>
-                  {type === "participated" && (
-                    <span className="flex-shrink-0 mt-2 sm:mt-0 ml-auto">
-                      <MdCheckCircle className="text-blue-700 inline w-5 h-5 align-middle" title="Participated" />
-                    </span>
-                  )}
-                </li>
+                </div>
               );
             })}
-          </ul>
+          </div>
+
           {users.length > USERS_PER_PAGE && (
-            <div className="flex justify-center gap-3 mt-4">
+            <div className="flex justify-center items-center gap-4 mt-6">
               <button
-                className="px-2 py-1 rounded bg-green-100 text-green-900 font-semibold text-sm disabled:opacity-50"
+                className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 font-medium transition-colors disabled:bg-gray-400"
                 onClick={() => setPage(page - 1)}
                 disabled={page <= 1}
-              >Prev</button>
-              <span className="px-2 font-semibold text-green-900">
-                Page {page} / {Math.max(1, Math.ceil(users.length / USERS_PER_PAGE))}
+              >
+                Previous
+              </button>
+              <span className="text-green-900 font-medium">
+                Page {page} of {Math.ceil(users.length / USERS_PER_PAGE)}
               </span>
-              <button className="px-2 py-1 rounded bg-green-100 text-green-900 font-semibold text-sm disabled:opacity-50"
+              <button
+                className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 font-medium transition-colors disabled:bg-gray-400"
                 onClick={() => setPage(page + 1)}
                 disabled={page >= Math.ceil(users.length / USERS_PER_PAGE)}
-              >Next</button>
+              >
+                Next
+              </button>
             </div>
           )}
         </>
@@ -326,22 +347,24 @@ export default function ChallengeParticipation() {
     return <span className={`px-3 py-1 rounded-full font-semibold text-base shadow ${style}`}>{status?.toUpperCase() || "UNKNOWN"}</span>;
   };
 
-  // --- Submission Display with "Submitted: ..." ---
+  // --- Submission Display (simplified) ---
   function SubmissionEntryView() {
     if (!mySubmission) return null;
     if (editSuccess) return <SubmissionSuccess message="Submission updated successfully!" />;
+
     return (
-      <div>
-        <div className="flex flex-row items-center justify-between mb-2">
-          <div className="flex items-center gap-2 ml-2 px-3 py-1.5 rounded-md bg-green-100 text-green-900 font-semibold">
-            <MdCheckCircle className="text-green-600 text-lg" />
-            <span className="text-sm tracking-wide">
-              <span className="uppercase">{mySubmission.status}</span>
-              <span className="mx-1 text-green-700">•</span>
-              <span className="font-normal">{formatIST(mySubmission.submitted_at)}</span>
-            </span>
+      <div className="space-y-4">
+        <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+          <div className="flex items-center justify-between mb-3">
+            <div className="flex items-center gap-2">
+              <MdCheckCircle className="w-5 h-5 text-green-600" />
+              <span className="font-semibold text-green-900 capitalize">{mySubmission.status}</span>
+              <span className="text-green-600">•</span>
+              <span className="text-green-700 text-sm">{formatIST(mySubmission.submitted_at)}</span>
+            </div>
           </div>
-          <div className="flex items-center gap-2 flex-wrap">
+
+          <div className="flex gap-3">
             <button
               onClick={() => {
                 setEditText(mySubmission.text_submission || "");
@@ -351,17 +374,30 @@ export default function ChallengeParticipation() {
                 setEditStatus("");
                 setEditSuccess(false);
               }}
-              className="px-3 py-1 rounded bg-yellow-100 border border-yellow-400 hover:bg-yellow-200 font-bold text-yellow-900 flex items-center gap-1 text-sm"><MdEdit /> Modify</button>
+              className="px-4 py-2 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 font-medium transition-colors flex items-center gap-2"
+            >
+              <MdEdit className="w-4 h-4" />
+              Edit
+            </button>
             <button
               onClick={handleDelete}
               disabled={deleteSubmitting}
-              className={`px-3 py-1 rounded bg-red-100 border border-red-400 hover:bg-red-200 font-bold text-red-800 flex items-center gap-1 text-sm ${deleteSubmitting ? "opacity-40" : ""}`}>
-              <MdDelete /> Delete
+              className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 disabled:bg-gray-400 font-medium transition-colors flex items-center gap-2"
+            >
+              <MdDelete className="w-4 h-4" />
+              {deleteSubmitting ? "Deleting..." : "Delete"}
             </button>
           </div>
         </div>
+
         {editStatus && (
-          <div className={`mt-2 mb-1 text-sm text-center ${editStatus.startsWith("Failed") ? "text-red-600" : "text-green-700"}`}>{editStatus}</div>
+          <div className={`p-3 rounded-lg text-center font-medium ${
+            editStatus.startsWith("Failed")
+              ? "bg-red-50 text-red-800 border border-red-200"
+              : "bg-green-50 text-green-800 border border-green-200"
+          }`}>
+            {editStatus}
+          </div>
         )}
       </div>
     );
@@ -369,131 +405,224 @@ export default function ChallengeParticipation() {
 
   // --- Main render ---
   return (
-    <div className="min-h-screen flex flex-col bg-gradient-to-br from-green-100 via-green-50 to-green-200">
+    <div className="min-h-screen bg-gradient-to-b from-green-50 to-green-100">
       <Navbar />
-      <div className="w-full mx-auto pt-8 pb-16 flex flex-col gap-8 px-6 sm:px-10 lg:px-16">
-        <div className="flex flex-row justify-between items-center mb-2 gap-3">
-          <h1 className="text-2xl md:text-3xl font-bold text-green-900 text-center flex-1">Challenge Participation</h1>
-          <button onClick={handleClose} className="inline-flex items-center gap-2 px-5 py-2 ml-4 rounded-lg bg-red-100 border-2 border-red-300 hover:bg-red-200 text-red-700 font-bold text-lg transition shadow" title="Close">
-            <MdClose className="w-6 h-6" /><span className="hidden sm:inline">Close</span>
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 py-6">
+        <div className="flex justify-between items-center mb-6">
+          <h1 className="text-2xl sm:text-3xl font-bold text-green-900">Challenge Participation</h1>
+          <button
+            onClick={handleClose}
+            className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 font-medium transition-colors"
+          >
+            Close
           </button>
         </div>
         {loading ? (
-          <div className="flex flex-col items-center justify-center py-24">
-            <div className="w-16 h-16 border-4 border-green-400 border-t-transparent rounded-full animate-spin" />
-            <p className="text-green-800 mt-4 text-lg font-semibold">Fetching challenge details...</p>
+          <div className="flex flex-col items-center justify-center py-12">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600"></div>
+            <p className="text-green-800 mt-4 font-medium">Loading challenge details...</p>
           </div>
         ) : challenge ? (
-          <div className="flex flex-col lg:flex-row justify-center items-start gap-8 w-full">
-            <section className="flex-shrink-0 w-full lg:w-[50vw] max-w-full bg-white rounded-2xl shadow-xl flex flex-col gap-5 min-h-[420px] px-6 py-7 relative">
-              <span className="font-black text-2xl md:text-3xl text-green-800 mb-1">{challenge.title}</span>
-              <div className="flex flex-wrap gap-4 items-center text-green-700 text-lg font-semibold">
-                <span className="flex items-center gap-2"><MdCategory className="w-6 h-6" /> {challenge.category}</span>
-                <span className="flex items-center gap-2"><MdStarRate className="w-6 h-6 text-yellow-400" /> {challenge.difficulty}</span>
-                <span className="flex items-center gap-2"><FaLeaf className="w-6 h-6 text-green-600" /> +{challenge.green_points} Points</span>
-              </div>
-              <div className="border-t border-green-200" />
-              <div className="flex flex-col gap-2 text-green-900 text-base mt-2">
-                <div className="flex items-center gap-2"><b>Status:</b> {getStatusBadge(challenge.status)}</div>
-                <span><b>Start:</b> {formatIST(challenge.start_date)}</span>
-                <span><b>End:</b> {formatIST(challenge.end_date)}</span>
-                <span className="flex items-center gap-1 text-blue-800"><MdAccessTime className="w-5 h-5" /><b className="mr-1">Remaining:</b><span className="font-semibold">{remaining}</span></span>
-                <div className="flex items-center gap-2">
-                  <MdPerson className="w-5 h-5 text-green-800" title="Created by" />
-                  <span className="font-semibold">{challenge.users?.full_name || "Unknown"}</span>
+          <div className="space-y-6">
+            {/* Challenge Information */}
+            <div className="bg-white rounded-lg shadow-sm border border-green-200 p-6">
+              <h2 className="text-2xl font-bold text-green-900 mb-4">{challenge.title}</h2>
+
+              {/* Key Information Cards */}
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6">
+                <div className="bg-green-50 rounded-lg p-3 text-center">
+                  <div className="text-green-600 text-sm font-medium mb-1">Category</div>
+                  <div className="text-green-900 font-semibold">{challenge.category}</div>
                 </div>
-                <div className="flex items-center justify-between mt-2">
-                  <b>Description:</b>
-                  <div className="flex gap-2">
-                    <button onClick={() => handleFontChange("increase")}
-                      className="px-2 py-1 rounded bg-green-200 hover:bg-green-300 text-green-900 font-bold text-sm" title="Increase text size">A+</button>
-                    <button onClick={() => handleFontChange("decrease")}
-                      className="px-2 py-1 rounded bg-green-200 hover:bg-green-300 text-green-900 font-bold text-sm" title="Decrease text size">A-</button>
+                <div className="bg-yellow-50 rounded-lg p-3 text-center">
+                  <div className="text-yellow-600 text-sm font-medium mb-1">Difficulty</div>
+                  <div className="text-yellow-900 font-semibold">{challenge.difficulty}</div>
+                </div>
+                <div className="bg-blue-50 rounded-lg p-3 text-center">
+                  <div className="text-blue-600 text-sm font-medium mb-1">Participants</div>
+                  <div className="text-blue-900 font-semibold">{challenge.total_participated || 0}</div>
+                </div>
+                <div className="bg-green-50 rounded-lg p-3 text-center">
+                  <div className="text-green-600 text-sm font-medium mb-1">Points</div>
+                  <div className="text-green-900 font-semibold flex items-center justify-center gap-1">
+                    <FaLeaf className="w-4 h-4" />
+                    {challenge.green_points}
                   </div>
                 </div>
-                <div className={`mt-2 border rounded bg-green-50/60 p-3 max-h-56 overflow-y-auto ${descFont}`}>{challenge.description}</div>
               </div>
-              <div className="flex flex-wrap gap-4 mt-auto pt-3">
-                <span className="flex items-center gap-2 bg-green-200 rounded px-3 py-1 text-green-900 font-medium"><MdPersonAdd className="w-5 h-5" /> {challenge.total_registered ?? challenge.total_participants}</span>
-                <span className="flex items-center gap-2 bg-yellow-200 rounded px-3 py-1 text-yellow-900 font-medium"><MdPeopleAlt className="w-5 h-5" /> {challenge.total_participated ?? 0}</span>
-                <span className="flex items-center gap-2 bg-blue-200 rounded px-3 py-1 text-blue-900 font-medium"><MdOutlinePeopleAlt className="w-5 h-5" /> {challenge.max_participants}</span>
-              </div>
-            </section>
-            <section className="flex-shrink-0 w-full lg:w-[35vw] max-w-full lg:max-w-[600px]">
-              <div className="bg-white rounded-2xl p-0 pt-2 shadow-xl flex flex-col mb-5 w-full">
-                <div className="flex border-b border-green-200 pl-4 gap-2 pt-2 bg-green-50/70 rounded-t-2xl">
-                  {[
-                    { key: "submit", label: "Submit Entry" },
-                    { key: "registered", label: `Registered (${registeredUsers.length})` },
-                    { key: "participated", label: `Participants (${participantsUsers.length})` },
-                  ].map(({ key, label }) =>
-                    <button key={key} onClick={() => setTab(key)}
-                      className={`relative pb-2 px-2 sm:px-5 text-base font-semibold transition duration-150 ${tab === key ? "text-blue-700 after:absolute after:left-1 after:right-1 after:bottom-0 after:h-[3px] after:rounded-full after:bg-blue-700" : "text-green-900 hover:text-green-700"}`}
-                      style={{ background: "none", border: 0, outline: "none" }}>{label}</button>
-                  )}
+
+              {/* Challenge Timeline */}
+              <div className="bg-gray-50 rounded-lg p-4 mb-6">
+                <h3 className="font-semibold text-green-900 mb-3">Challenge Timeline</h3>
+                <div className="space-y-2 text-sm">
+                  <div className="flex justify-between">
+                    <span className="text-green-700 font-medium">Starts:</span>
+                    <span className="text-green-900">{formatIST(challenge.start_date)}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-green-700 font-medium">Ends:</span>
+                    <span className="text-green-900">{formatIST(challenge.end_date)}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-green-700 font-medium">Time Remaining:</span>
+                    <span className="text-blue-600 font-semibold">{remaining}</span>
+                  </div>
                 </div>
-                <div className="p-4 sm:p-6">
-                  {tab === "submit" ? (
-                    submitting ? <Spinner /> :
-                      submitSuccess ? <SubmissionSuccess /> :
-                        showEdit ? <SubmissionEditForm
-                          editText={editText} setEditText={setEditText}
-                          editImageFiles={editImageFiles} setEditImageFiles={setEditImageFiles}
-                          editVideoFile={editVideoFile} setEditVideoFile={setEditVideoFile}
-                          editImageInput={editImageInput} editVideoInput={editVideoInput}
-                          handleEditImageChange={handleEditImageChange}
-                          handleEditVideoChange={handleEditVideoChange}
-                          removeEditImage={removeEditImage} removeEditVideo={removeEditVideo}
-                          handleEditSubmit={handleEditSubmit}
-                          editStatus={editStatus} editSubmitting={editSubmitting}
-                          setShowEdit={setShowEdit} setEditStatus={setEditStatus} setEditSuccess={setEditSuccess}
-                        />
-                          : mySubmission ? <SubmissionEntryView />
-                            : <section className="flex flex-col gap-5">
-                              <h2 className="font-bold text-lg mb-2 text-green-900">Submit your entry</h2>
-                              {submitStatus && <div className={`mb-2 text-sm text-center ${submitStatus.startsWith("Failed") ? "text-red-600" : "text-green-700"}`}>{submitStatus}</div>}
-                              <form onSubmit={handleSubmit} className="flex flex-col gap-5">
-                                <label className="flex flex-col gap-2 font-semibold text-green-900">
-                                  Text Submission (optional):
-                                  <textarea
-                                    className="border rounded p-2 resize-y min-h-[70px] text-[1rem]"
-                                    placeholder="Describe your participation or add notes (optional)"
-                                    value={textSubmission} onChange={e => setTextSubmission(e.target.value)}
-                                    maxLength={2000} rows={3}
-                                  />
-                                </label>
-                                <div className="flex flex-col md:flex-row gap-4">
-                                  <div className="flex-1">
-                                    <label className="block font-semibold text-green-900 mb-2">Upload Images (max 10)</label>
-                                    <button type="button" className="px-2 py-1 bg-green-600 text-white font-bold rounded shadow flex items-center gap-2 mb-2 hover:bg-green-800 active:bg-green-900 text-sm"
-                                      onClick={() => imageInput.current?.click()}><MdImage className="w-5 h-5" /> Image</button>
-                                    <input ref={imageInput} type="file" accept="image/*" multiple max={10} onChange={handleImageChange} style={{ display: "none" }} />
-                                    <FilePreview files={imageFiles} remove={removeImage} type="image" />
-                                    <div className="text-xs text-green-900 mt-1">{imageFiles.length >= 10 && "Max 10 images selected."}</div>
+                <div className="mt-3 text-xs text-green-600">
+                  Created by: <span className="font-medium">{challenge.users?.full_name || "Unknown"}</span>
+                </div>
+              </div>
+
+              {/* Description */}
+              <div>
+                <h3 className="font-semibold text-green-900 mb-3">About This Challenge</h3>
+                <div className="bg-green-50 rounded-lg p-4">
+                  <p className="text-green-800 leading-relaxed whitespace-pre-line">
+                    {challenge.description}
+                  </p>
+                </div>
+              </div>
+            </div>
+            {/* Action Section */}
+            <div className="bg-white rounded-lg shadow-sm border border-green-200">
+              {/* Tab Navigation */}
+              <div className="flex border-b border-green-200">
+                {[
+                  { key: "submit", label: "Submit Entry" },
+                  { key: "registered", label: `Registered (${registeredUsers.length})` },
+                  { key: "participated", label: `Participants (${participantsUsers.length})` },
+                ].map(({ key, label }) => (
+                  <button
+                    key={key}
+                    onClick={() => setTab(key)}
+                    className={`flex-1 py-3 px-4 text-center font-medium transition-colors ${
+                      tab === key
+                        ? "text-blue-600 border-b-2 border-blue-600 bg-blue-50"
+                        : "text-green-700 hover:text-green-900 hover:bg-green-50"
+                    }`}
+                  >
+                    {label}
+                  </button>
+                ))}
+              </div>
+
+              {/* Tab Content */}
+              <div className="p-6">
+                {tab === "submit" ? (
+                  submitting ? <Spinner /> :
+                    submitSuccess ? <SubmissionSuccess /> :
+                      showEdit ? <SubmissionEditForm
+                        editText={editText} setEditText={setEditText}
+                        editImageFiles={editImageFiles} setEditImageFiles={setEditImageFiles}
+                        editVideoFile={editVideoFile} setEditVideoFile={setEditVideoFile}
+                        editImageInput={editImageInput} editVideoInput={editVideoInput}
+                        handleEditImageChange={handleEditImageChange}
+                        handleEditVideoChange={handleEditVideoChange}
+                        removeEditImage={removeEditImage} removeEditVideo={removeEditVideo}
+                        handleEditSubmit={handleEditSubmit}
+                        editStatus={editStatus} editSubmitting={editSubmitting}
+                        setShowEdit={setShowEdit} setEditStatus={setEditStatus} setEditSuccess={setEditSuccess}
+                      />
+                        : mySubmission ? <SubmissionEntryView />
+                          : (
+                            <div className="space-y-6">
+                              <div>
+                                <h3 className="font-semibold text-green-900 mb-3">Share Your Participation</h3>
+                                {submitStatus && (
+                                  <div className={`mb-4 p-3 rounded-lg text-center font-medium ${
+                                    submitStatus.startsWith("Failed")
+                                      ? "bg-red-50 text-red-800 border border-red-200"
+                                      : "bg-green-50 text-green-800 border border-green-200"
+                                  }`}>
+                                    {submitStatus}
                                   </div>
-                                  <div className="flex-1">
-                                    <label className="block font-semibold text-green-900 mb-2">Upload Video (max 1)</label>
-                                    <button type="button" className="px-2 py-1 bg-blue-700 text-white font-bold rounded shadow flex items-center gap-2 mb-2 hover:bg-blue-900 text-sm"
-                                      onClick={() => videoInput.current?.click()} disabled={!!videoFile}><MdVideocam className="w-5 h-5" /> Video</button>
-                                    <input ref={videoInput} type="file" accept="video/*" multiple={false} onChange={handleVideoChange} style={{ display: "none" }} />
+                                )}
+                              </div>
+
+                              <form onSubmit={handleSubmit} className="space-y-6">
+                                <div>
+                                  <label className="block font-medium text-green-900 mb-2">
+                                    Description (Optional)
+                                  </label>
+                                  <textarea
+                                    className="w-full border border-green-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-green-500"
+                                    placeholder="Tell us about your participation..."
+                                    value={textSubmission}
+                                    onChange={e => setTextSubmission(e.target.value)}
+                                    maxLength={2000}
+                                    rows={4}
+                                  />
+                                </div>
+
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                  <div>
+                                    <label className="block font-medium text-green-900 mb-2">
+                                      Upload Images (Max 10)
+                                    </label>
+                                    <button
+                                      type="button"
+                                      onClick={() => imageInput.current?.click()}
+                                      className="w-full py-3 px-4 bg-green-600 text-white rounded-lg hover:bg-green-700 font-medium transition-colors flex items-center justify-center gap-2"
+                                    >
+                                      <MdImage className="w-5 h-5" />
+                                      Choose Images
+                                    </button>
+                                    <input
+                                      ref={imageInput}
+                                      type="file"
+                                      accept="image/*"
+                                      multiple
+                                      max={10}
+                                      onChange={handleImageChange}
+                                      style={{ display: "none" }}
+                                    />
+                                    <FilePreview files={imageFiles} remove={removeImage} type="image" />
+                                    {imageFiles.length >= 10 && (
+                                      <p className="text-sm text-green-600 mt-2">Maximum 10 images reached</p>
+                                    )}
+                                  </div>
+
+                                  <div>
+                                    <label className="block font-medium text-green-900 mb-2">
+                                      Upload Video (Optional)
+                                    </label>
+                                    <button
+                                      type="button"
+                                      onClick={() => videoInput.current?.click()}
+                                      disabled={!!videoFile}
+                                      className="w-full py-3 px-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-400 font-medium transition-colors flex items-center justify-center gap-2"
+                                    >
+                                      <MdVideocam className="w-5 h-5" />
+                                      Choose Video
+                                    </button>
+                                    <input
+                                      ref={videoInput}
+                                      type="file"
+                                      accept="video/*"
+                                      onChange={handleVideoChange}
+                                      style={{ display: "none" }}
+                                    />
                                     {videoFile && <FilePreview files={[videoFile]} remove={removeVideo} type="video" />}
-                                    <div className="text-xs text-blue-900 mt-1">{videoFile ? "Max 1 video selected." : ""}</div>
                                   </div>
                                 </div>
-                                <button type="submit" disabled={submitting}
-                                  className="w-full mt-2 px-4 py-3 bg-blue-700 hover:bg-blue-900 text-white rounded-full font-bold shadow-lg transition-shadow focus:outline-none focus:ring-2 focus:ring-blue-500">
-                                  {submitting ? "Submitting..." : "Submit Entry"}
+
+                                <button
+                                  type="submit"
+                                  disabled={submitting}
+                                  className="w-full py-3 px-6 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-colors disabled:bg-gray-400"
+                                >
+                                  {submitting ? "Submitting..." : "Submit Your Entry"}
                                 </button>
                               </form>
-                            </section>
-                  ) : tab === "registered" ? (
-                    <UserList users={registeredUsers} type="registered" userId={userId} page={regPage} setPage={setRegPage} />
-                  ) : (
-                    <UserList users={participantsUsers} type="participated" userId={userId} page={partPage} setPage={setPartPage} />
-                  )}
-                </div>
+                            </div>
+                          )
+                ) : tab === "registered" ? (
+                  <UserList users={registeredUsers} type="registered" userId={userId} page={regPage} setPage={setRegPage} />
+                ) : (
+                  <UserList users={participantsUsers} type="participated" userId={userId} page={partPage} setPage={setPartPage} />
+                )}
               </div>
-            </section>
+            </div>
           </div>
         ) : (
           <div className="text-xl text-red-600 py-10 font-bold text-center">Challenge details not found.</div>

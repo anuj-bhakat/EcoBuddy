@@ -1,8 +1,10 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { FaLeaf, FaTrash, FaShoppingCart } from "react-icons/fa";
 
 const Cart = ({ cartItems, onClose, onRemoveFromCart, onUpdateQuantity, onClearCart }) => {
   const [isClosing, setIsClosing] = useState(false);
+  const navigate = useNavigate();
 
   const handleClose = () => {
     setIsClosing(true);
@@ -10,6 +12,10 @@ const Cart = ({ cartItems, onClose, onRemoveFromCart, onUpdateQuantity, onClearC
       onClose();
       setIsClosing(false);
     }, 300);
+  };
+
+  const handleCheckout = () => {
+    navigate("/checkout", { state: { cartItems } });
   };
 
   const totalPoints = cartItems.reduce((sum, item) => sum + (item.price_points * item.quantity), 0);
@@ -89,7 +95,7 @@ const Cart = ({ cartItems, onClose, onRemoveFromCart, onUpdateQuantity, onClearC
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="bg-green-600 text-white p-3 sm:p-4 md:p-6 flex flex-col sm:flex-row items-center justify-between gap-2">
+        <div className="bg-green-600 text-white p-3 sm:p-4 md:p-6 flex items-center justify-between">
           <div className="flex items-center gap-2 sm:gap-3">
             <FaShoppingCart className="w-5 h-5 sm:w-6 sm:h-6" />
             <h2 className="text-lg sm:text-xl md:text-2xl font-bold">Your Cart</h2>
@@ -97,16 +103,16 @@ const Cart = ({ cartItems, onClose, onRemoveFromCart, onUpdateQuantity, onClearC
               {totalProducts} / 3
             </span>
           </div>
-          <div className="flex items-center gap-2 sm:gap-4">
+          <div className="flex items-center gap-3">
             <button
               onClick={onClearCart}
-              className="text-green-200 hover:text-white text-xs sm:text-sm font-medium transition-colors"
+              className="bg-green-700 hover:bg-green-800 text-white px-3 py-2 rounded-lg font-semibold text-sm transition-colors shadow-sm"
             >
               Clear All
             </button>
             <button
               onClick={handleClose}
-              className="text-white hover:text-green-200 text-xl sm:text-2xl font-bold transition-colors"
+              className="bg-red-600 hover:bg-red-700 text-white w-10 h-10 rounded-full flex items-center justify-center font-bold text-lg transition-colors shadow-sm"
               aria-label="Close cart"
             >
               ×
@@ -123,50 +129,39 @@ const Cart = ({ cartItems, onClose, onRemoveFromCart, onUpdateQuantity, onClearC
                 className="bg-white rounded-lg sm:rounded-xl shadow-sm border border-gray-200 hover:shadow-md hover:border-green-300 transition-all duration-200"
               >
                 <div className="p-3 sm:p-4 md:p-6">
-                  <div className="flex flex-col sm:flex-row items-start gap-3 sm:gap-4 md:gap-6">
-                    {/* Product Image */}
-                    <div className="flex-shrink-0 self-center sm:self-start mb-3 sm:mb-0">
-                      <img
-                        src={item.images[0]}
-                        alt={item.name}
-                        className="w-14 h-14 sm:w-20 sm:h-20 md:w-24 md:h-24 object-cover rounded-lg shadow-sm"
-                      />
-                    </div>
+                  {/* Upper Row: Image, Points, Delete Button */}
+                  <div className="flex items-center justify-between mb-3">
+                    <div className="flex items-center gap-3">
+                      {/* Product Image */}
+                      <div className="flex-shrink-0">
+                        <img
+                          src={item.images[0]}
+                          alt={item.name}
+                          className="w-16 h-16 sm:w-20 sm:h-20 object-cover rounded-lg shadow-sm"
+                        />
+                      </div>
 
-                    {/* Product Details */}
-                    <div className="flex-1 min-w-0">
-                      <h3 className="text-base sm:text-lg md:text-xl font-bold text-green-800 mb-1 sm:mb-2 leading-tight">
-                        {item.name}
-                      </h3>
-                      <p className="text-gray-600 text-xs sm:text-sm mb-3 sm:mb-4 leading-relaxed">
-                        {item.description}
-                      </p>
-
-                      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-0">
-                        {/* Quantity Badge */}
-                        <div className="flex items-center gap-2">
-                          <span className="inline-flex items-center px-2 py-0.5 sm:px-3 sm:py-1 rounded-full text-xs sm:text-sm font-semibold bg-green-100 text-green-800">
-                            Qty: {item.quantity}
-                          </span>
-                        </div>
-
-                        {/* Price and Remove */}
-                        <div className="flex items-center gap-2 sm:gap-4 md:gap-6">
-                          <div className="text-right">
-                            <div className="text-base sm:text-lg md:text-xl font-bold text-green-800">
-                              {item.price_points * item.quantity} pts
-                            </div>
-                          </div>
-                          <button
-                            onClick={() => onRemoveFromCart(item.id)}
-                            className="p-2 sm:p-3 text-red-500 hover:text-red-700 hover:bg-red-50 rounded-lg transition-colors border border-red-200 hover:border-red-300"
-                            title="Remove from cart"
-                          >
-                            <FaTrash className="w-4 h-4 sm:w-5 sm:h-5" />
-                          </button>
-                        </div>
+                      {/* Price Points */}
+                      <div className="text-lg font-bold text-green-800">
+                        {item.price_points} pts
                       </div>
                     </div>
+
+                    {/* Delete Button - Fixed on right end */}
+                    <button
+                      onClick={() => onRemoveFromCart(item.id)}
+                      className="w-10 h-10 flex items-center justify-center text-red-500 hover:text-red-700 hover:bg-red-50 rounded-lg transition-colors border border-red-200 hover:border-red-300"
+                      title="Remove from cart"
+                    >
+                      <FaTrash className="w-4 h-4" />
+                    </button>
+                  </div>
+
+                  {/* Lower Row: Product Name */}
+                  <div className="text-left">
+                    <h3 className="text-base sm:text-lg font-bold text-green-800 leading-tight">
+                      {item.name}
+                    </h3>
                   </div>
                 </div>
               </div>
@@ -197,11 +192,14 @@ const Cart = ({ cartItems, onClose, onRemoveFromCart, onUpdateQuantity, onClearC
           <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
             <button
               onClick={handleClose}
-              className="flex-1 border-2 border-green-600 text-green-600 py-2.5 sm:py-3 md:py-4 rounded-lg sm:rounded-xl font-bold hover:bg-green-50 transition-colors text-sm sm:text-base md:text-lg"
+              className="flex-1 border-2 border-green-600 text-green-600 py-3 sm:py-4 rounded-xl font-bold hover:bg-green-50 transition-all duration-200 text-sm sm:text-base shadow-sm hover:shadow-md"
             >
               Continue Shopping
             </button>
-            <button className="flex-1 bg-gradient-to-r from-green-600 to-green-700 text-white py-2.5 sm:py-3 md:py-4 rounded-lg sm:rounded-xl font-bold hover:from-green-700 hover:to-green-800 transition-all duration-200 text-sm sm:text-base md:text-lg shadow-lg hover:shadow-xl tracking-wide uppercase">
+            <button
+              onClick={handleCheckout}
+              className="flex-1 bg-gradient-to-r from-green-600 to-emerald-600 text-white py-3 sm:py-4 rounded-xl font-bold hover:from-green-700 hover:to-emerald-700 transition-all duration-200 text-sm sm:text-base shadow-lg hover:shadow-xl"
+            >
               Proceed to Checkout
             </button>
           </div>
